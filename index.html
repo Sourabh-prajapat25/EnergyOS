@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>EnergyOS — The AI Energy Operating System for MSMEs</title>
+<meta name="description" content="EnergyOS transforms your existing electrical infrastructure into an intelligent AI platform: monitor, analyze, predict, optimize and protect — without replacing machines." />
+<meta property="og:title" content="EnergyOS — AI Energy OS for MSMEs" />
+<meta property="og:description" content="Monitor. Analyze. Predict. Optimize. Protect." />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>%E2%9A%A1</text></svg>" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+<link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+
+<!-- Preloader -->
+<div class="preloader" id="preloader">
+  <div class="preloader-inner">
+    <div class="bolt"><i class="fa-solid fa-bolt"></i></div>
+    <div class="preloader-text">EnergyOS</div>
+    <div class="preloader-bar"><span></span></div>
+  </div>
+</div>
+
+<!-- Cursor -->
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="#home" class="logo"><span class="logo-mark"><i class="fa-solid fa-bolt"></i></span> EnergyOS</a>
+    <nav class="nav-links" id="navLinks">
+      <a href="#home" class="active">Home</a>
+      <a href="#features">Features</a>
+      <a href="#workflow">How It Works</a>
+      <a href="#dashboard">Dashboard</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="./project.pdf" target="_blank" class="btn btn-ghost">View Plan</a>
+      <a href="./dashboard.html" class="btn btn-primary magnetic"><i class="fa-solid fa-chart-line"></i> Demo Dashboard</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg">
+    <canvas id="particles"></canvas>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <svg class="grid-svg" viewBox="0 0 800 600" preserveAspectRatio="none">
+      <defs>
+        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+          <path d="M40 0 L0 0 0 40" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+        </pattern>
+      </defs>
+      <rect width="800" height="600" fill="url(#grid)"/>
+    </svg>
+  </div>
+
+  <div class="container hero-grid">
+    <div class="hero-copy reveal">
+      <div class="chip"><span class="dot"></span> AI Powered · Industrial IoT · Retrofit Ready</div>
+      <h1 class="hero-title">
+        The <span class="grad">AI Energy</span><br/>
+        Operating System<br/>
+        for <span class="grad-alt">MSMEs</span>
+      </h1>
+      <p class="hero-sub"><b>Monitor.</b> <b>Analyze.</b> <b>Predict.</b> <b>Optimize.</b> <b>Protect.</b></p>
+      <p class="hero-desc">
+        EnergyOS transforms your existing electrical infrastructure into an intelligent AI platform that monitors energy consumption, predicts machine failures, detects wastage, optimizes operations and improves industrial safety — <b>without replacing any machine</b>.
+      </p>
+      <div class="hero-actions">
+        <a href="./project.pdf" target="_blank" class="btn btn-primary magnetic btn-lg"><i class="fa-solid fa-file-lines"></i> View Project Plan</a>
+        <a href="./dashboard.html" class="btn btn-outline magnetic btn-lg"><i class="fa-solid fa-gauge-high"></i> Explore Demo Dashboard</a>
+        <a href="#workflow" class="btn btn-text"><i class="fa-solid fa-play"></i> Watch Overview</a>
+      </div>
+      <div class="hero-badges">
+        <span><i class="fa-solid fa-shield-halved"></i> ISO-ready</span>
+        <span><i class="fa-solid fa-cloud"></i> Cloud Native</span>
+        <span><i class="fa-solid fa-microchip"></i> Edge AI</span>
+      </div>
+    </div>
+
+    <div class="hero-visual reveal">
+      <div class="laptop" id="laptop">
+        <div class="laptop-screen">
+          <img src="./assets/dashboard.png" alt="EnergyOS Dashboard" />
+          <div class="reflection"></div>
+        </div>
+        <div class="laptop-base"></div>
+      </div>
+
+      <div class="float-card fc-1 glass">
+        <div class="fc-title"><i class="fa-solid fa-bolt"></i> Live Load</div>
+        <div class="fc-value"><span data-count="78">0</span>%</div>
+        <div class="mini-bars">
+          <span style="--h:40%"></span><span style="--h:70%"></span><span style="--h:55%"></span>
+          <span style="--h:82%"></span><span style="--h:64%"></span><span style="--h:90%"></span>
+        </div>
+      </div>
+
+      <div class="float-card fc-2 glass">
+        <div class="fc-title alert"><i class="fa-solid fa-triangle-exclamation"></i> AI Alert</div>
+        <div class="fc-body">Compressor #3 vibration anomaly detected — schedule maintenance in 6 days.</div>
+      </div>
+
+      <div class="float-card fc-3 glass">
+        <div class="fc-title"><i class="fa-solid fa-leaf"></i> CO₂ Saved</div>
+        <div class="fc-value grad-text"><span data-count="18">0</span>.7 t</div>
+      </div>
+
+      <svg class="hero-line" viewBox="0 0 400 120" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="lg1" x1="0" x2="1">
+            <stop offset="0" stop-color="#00E676"/>
+            <stop offset="1" stop-color="#00C2FF"/>
+          </linearGradient>
+        </defs>
+        <path class="draw" d="M0 90 C 60 40 120 100 180 60 S 300 20 400 55" fill="none" stroke="url(#lg1)" stroke-width="3"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats container">
+  <div class="stat glass reveal"><div class="num"><span data-count="10">0</span>%</div><div class="lbl">Energy Savings</div></div>
+  <div class="stat glass reveal"><div class="num"><span data-count="35">0</span>%</div><div class="lbl">Reduced Downtime</div></div>
+  <div class="stat glass reveal"><div class="num"><span data-count="50">0</span>%</div><div class="lbl">Faster Emergency Response</div></div>
+  <div class="stat glass reveal"><div class="num"><span data-count="100">0</span>%</div><div class="lbl">Real-time Monitoring</div></div>
+</section>
+
+<!-- TRUST -->
+<section class="trust container" id="trust">
+  <div class="section-head reveal">
+    <div class="eyebrow">Industries</div>
+    <h2>Designed for <span class="grad">Every Manufacturing Industry</span></h2>
+    <p>From steel plants to cold storage — one platform, every asset.</p>
+  </div>
+  <div class="trust-grid">
+    <div class="ind reveal"><i class="fa-solid fa-industry"></i><span>Manufacturing</span></div>
+    <div class="ind reveal"><i class="fa-solid fa-shirt"></i><span>Textile</span></div>
+    <div class="ind reveal"><i class="fa-solid fa-utensils"></i><span>Food Processing</span></div>
+    <div class="ind reveal"><i class="fa-solid fa-snowflake"></i><span>Cold Storage</span></div>
+    <div class="ind reveal"><i class="fa-solid fa-building"></i><span>Commercial</span></div>
+    <div class="ind reveal"><i class="fa-solid fa-hospital"></i><span>Hospitals</span></div>
+    <div class="ind reveal"><i class="fa-solid fa-warehouse"></i><span>Warehouses</span></div>
+    <div class="ind reveal"><i class="fa-solid fa-flask"></i><span>Chemical</span></div>
+    <div class="ind reveal"><i class="fa-solid fa-gears"></i><span>Steel</span></div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="problem container" id="problem">
+  <div class="two-col">
+    <div class="reveal">
+      <div class="eyebrow">The Problem</div>
+      <h2>Factories are running <span class="grad-alt">blind & bleeding energy</span>.</h2>
+      <ul class="problem-list">
+        <li><i class="fa-solid fa-xmark"></i> Sky-high electricity bills</li>
+        <li><i class="fa-solid fa-xmark"></i> No machine-level visibility</li>
+        <li><i class="fa-solid fa-xmark"></i> Idle machines wasting energy</li>
+        <li><i class="fa-solid fa-xmark"></i> No predictive maintenance</li>
+        <li><i class="fa-solid fa-xmark"></i> Unexpected machine failures</li>
+        <li><i class="fa-solid fa-xmark"></i> Manual energy audits</li>
+        <li><i class="fa-solid fa-xmark"></i> No emergency alerting</li>
+        <li><i class="fa-solid fa-xmark"></i> Poor power factor penalties</li>
+        <li><i class="fa-solid fa-xmark"></i> No energy analytics</li>
+        <li><i class="fa-solid fa-xmark"></i> Peak demand overcharges</li>
+      </ul>
+    </div>
+    <div class="reveal">
+      <div class="electric-illu glass">
+        <svg viewBox="0 0 400 400" width="100%" height="100%">
+          <defs>
+            <linearGradient id="wire" x1="0" x2="1">
+              <stop offset="0" stop-color="#00E676"/>
+              <stop offset="1" stop-color="#7C4DFF"/>
+            </linearGradient>
+            <filter id="glow"><feGaussianBlur stdDeviation="3"/></filter>
+          </defs>
+          <circle cx="200" cy="200" r="150" fill="none" stroke="url(#wire)" stroke-width="1.5" opacity=".4"/>
+          <circle cx="200" cy="200" r="100" fill="none" stroke="url(#wire)" stroke-width="1.5" opacity=".6"/>
+          <circle cx="200" cy="200" r="50" fill="none" stroke="url(#wire)" stroke-width="1.5"/>
+          <path class="pulse-path" d="M50 200 Q 200 100 350 200" fill="none" stroke="url(#wire)" stroke-width="2" filter="url(#glow)"/>
+          <path class="pulse-path" d="M50 200 Q 200 300 350 200" fill="none" stroke="url(#wire)" stroke-width="2" filter="url(#glow)"/>
+          <g class="spark">
+            <circle cx="200" cy="200" r="8" fill="#00E676"/>
+            <circle cx="200" cy="200" r="18" fill="none" stroke="#00E676" opacity=".4"/>
+          </g>
+          <text x="200" y="380" text-anchor="middle" fill="#94A3B8" font-family="Space Grotesk" font-size="14">Uncontrolled Energy Flow</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTION -->
+<section class="solution container" id="solution">
+  <div class="section-head reveal">
+    <div class="eyebrow">The Solution</div>
+    <h2>Meet <span class="grad">EnergyOS</span></h2>
+    <p>One intelligent operating system connecting your grid to your decisions.</p>
+  </div>
+  <div class="arch glass reveal">
+    <div class="arch-flow">
+      <div class="node"><i class="fa-solid fa-plug-circle-bolt"></i><span>Electric Grid</span></div>
+      <div class="arrow"></div>
+      <div class="node"><i class="fa-solid fa-gauge"></i><span>Smart Meter</span></div>
+      <div class="arrow"></div>
+      <div class="node"><i class="fa-solid fa-ethernet"></i><span>RS485</span></div>
+      <div class="arrow"></div>
+      <div class="node"><i class="fa-solid fa-microchip"></i><span>Gateway</span></div>
+      <div class="arrow"></div>
+      <div class="node"><i class="fa-solid fa-cloud"></i><span>Cloud</span></div>
+      <div class="arrow"></div>
+      <div class="node accent"><i class="fa-solid fa-brain"></i><span>AI Engine</span></div>
+      <div class="arrow"></div>
+      <div class="node"><i class="fa-solid fa-desktop"></i><span>Dashboard</span></div>
+      <div class="arrow"></div>
+      <div class="node"><i class="fa-solid fa-user-tie"></i><span>Manager</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features container" id="features">
+  <div class="section-head reveal">
+    <div class="eyebrow">Features</div>
+    <h2>Everything a modern factory needs — <span class="grad">in one OS</span></h2>
+  </div>
+  <div class="feature-grid" id="featureGrid">
+    <!-- populated by JS for cleaner markup + modals -->
+  </div>
+</section>
+
+<!-- AI -->
+<section class="ai container" id="ai">
+  <div class="section-head reveal">
+    <div class="eyebrow">Artificial Intelligence</div>
+    <h2>AI inside every <span class="grad-alt">decision</span></h2>
+  </div>
+  <div class="ai-wrap">
+    <div class="ai-orb reveal">
+      <div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div>
+      <div class="core"><i class="fa-solid fa-brain"></i></div>
+    </div>
+    <div class="ai-cards">
+      <div class="ai-card glass reveal"><i class="fa-solid fa-wave-square"></i><h4>Energy Pattern Learning</h4></div>
+      <div class="ai-card glass reveal"><i class="fa-solid fa-heart-pulse"></i><h4>Machine Health Prediction</h4></div>
+      <div class="ai-card glass reveal"><i class="fa-solid fa-indian-rupee-sign"></i><h4>Cost Forecasting</h4></div>
+      <div class="ai-card glass reveal"><i class="fa-solid fa-chart-line"></i><h4>Peak Demand Prediction</h4></div>
+      <div class="ai-card glass reveal"><i class="fa-solid fa-lightbulb"></i><h4>Recommendation Engine</h4></div>
+      <div class="ai-card glass reveal"><i class="fa-solid fa-shield-halved"></i><h4>Safety Intelligence</h4></div>
+      <div class="ai-card glass reveal"><i class="fa-solid fa-triangle-exclamation"></i><h4>Risk Detection</h4></div>
+      <div class="ai-card glass reveal"><i class="fa-solid fa-comments"></i><h4>NL AI Assistant</h4></div>
+    </div>
+  </div>
+</section>
+
+<!-- WORKFLOW -->
+<section class="workflow container" id="workflow">
+  <div class="section-head reveal">
+    <div class="eyebrow">How It Works</div>
+    <h2>From <span class="grad">panel</span> to <span class="grad-alt">decision</span> in seconds</h2>
+  </div>
+  <div class="timeline reveal">
+    <div class="line"></div>
+    <div class="step"><span>1</span><h4>Electrical Panel</h4></div>
+    <div class="step"><span>2</span><h4>Smart Meter</h4></div>
+    <div class="step"><span>3</span><h4>Gateway</h4></div>
+    <div class="step"><span>4</span><h4>Cloud</h4></div>
+    <div class="step"><span>5</span><h4>AI Analysis</h4></div>
+    <div class="step"><span>6</span><h4>Dashboard</h4></div>
+    <div class="step"><span>7</span><h4>Decision Making</h4></div>
+  </div>
+</section>
+
+<!-- USE CASE -->
+<section class="usecase container">
+  <div class="section-head reveal">
+    <div class="eyebrow">Real Impact</div>
+    <h2>A single insight can save <span class="grad">₹42,000/month</span></h2>
+  </div>
+  <div class="usecase-flow glass reveal">
+    <div class="uc"><div class="uc-lbl">Monthly Bill</div><div class="uc-val">₹5,00,000</div></div>
+    <div class="uc-arrow"><i class="fa-solid fa-arrow-right-long"></i></div>
+    <div class="uc"><div class="uc-lbl">AI detects</div><div class="uc-val small">Idle Machine</div></div>
+    <div class="uc-arrow"><i class="fa-solid fa-arrow-right-long"></i></div>
+    <div class="uc"><div class="uc-lbl">Recommendation</div><div class="uc-val small">Auto Switch-Off</div></div>
+    <div class="uc-arrow"><i class="fa-solid fa-arrow-right-long"></i></div>
+    <div class="uc"><div class="uc-lbl">Action</div><div class="uc-val small">Executed</div></div>
+    <div class="uc-arrow"><i class="fa-solid fa-arrow-right-long"></i></div>
+    <div class="uc highlight"><div class="uc-lbl">Monthly Saving</div><div class="uc-val grad-text">₹42,000</div></div>
+  </div>
+</section>
+
+<!-- DASHBOARD SHOWCASE -->
+<section class="showcase container" id="dashboard">
+  <div class="section-head reveal">
+    <div class="eyebrow">Dashboard</div>
+    <h2>A control room for your <span class="grad">entire factory</span></h2>
+  </div>
+  <div class="showcase-laptop reveal">
+    <div class="laptop big">
+      <div class="laptop-screen"><img src="./assets/dashboard.png" alt="Dashboard" /><div class="reflection"></div></div>
+      <div class="laptop-base"></div>
+    </div>
+    <div class="showcase-cta">
+      <a href="./dashboard.html" class="btn btn-primary magnetic btn-lg"><i class="fa-solid fa-rocket"></i> Open Live Dashboard</a>
+      <a href="./dashboard.html" class="btn btn-outline magnetic btn-lg"><i class="fa-solid fa-play"></i> Interactive Demo</a>
+    </div>
+  </div>
+</section>
+
+<!-- WHY -->
+<section class="why container">
+  <div class="section-head reveal">
+    <div class="eyebrow">Why EnergyOS</div>
+    <h2>Built for the <span class="grad">real world</span></h2>
+  </div>
+  <div class="why-grid">
+    <div class="why-card glass reveal"><i class="fa-solid fa-screwdriver-wrench"></i><h4>Retrofit Friendly</h4></div>
+    <div class="why-card glass reveal"><i class="fa-solid fa-ban"></i><h4>No PLC Required</h4></div>
+    <div class="why-card glass reveal"><i class="fa-solid fa-clock-rotate-left"></i><h4>Works With Old Machines</h4></div>
+    <div class="why-card glass reveal"><i class="fa-solid fa-hand-holding-dollar"></i><h4>Affordable</h4></div>
+    <div class="why-card glass reveal"><i class="fa-solid fa-bolt-lightning"></i><h4>Fast Installation</h4></div>
+    <div class="why-card glass reveal"><i class="fa-solid fa-brain"></i><h4>AI Powered</h4></div>
+    <div class="why-card glass reveal"><i class="fa-solid fa-cloud-bolt"></i><h4>Cloud Ready</h4></div>
+    <div class="why-card glass reveal"><i class="fa-solid fa-arrows-up-down-left-right"></i><h4>Scalable</h4></div>
+    <div class="why-card glass reveal"><i class="fa-solid fa-lock"></i><h4>Secure</h4></div>
+    <div class="why-card glass reveal"><i class="fa-solid fa-user-shield"></i><h4>Role Based Alerts</h4></div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing container" id="pricing">
+  <div class="section-head reveal">
+    <div class="eyebrow">Pricing</div>
+    <h2>Simple, transparent <span class="grad">pricing</span></h2>
+  </div>
+  <div class="price-grid">
+    <div class="price glass reveal">
+      <h3>Starter</h3>
+      <div class="price-value">₹2,000<span>/month</span></div>
+      <ul>
+        <li><i class="fa-solid fa-check"></i> 1 Smart Meter</li>
+        <li><i class="fa-solid fa-check"></i> Live Monitoring</li>
+        <li><i class="fa-solid fa-check"></i> Basic Alerts</li>
+        <li><i class="fa-solid fa-check"></i> Email Reports</li>
+      </ul>
+      <a href="#contact" class="btn btn-outline w-full">Get Started</a>
+    </div>
+    <div class="price glass featured reveal">
+      <div class="badge">Most Popular</div>
+      <h3>Professional</h3>
+      <div class="price-value">₹4,000<span>/month</span></div>
+      <ul>
+        <li><i class="fa-solid fa-check"></i> Up to 10 Meters</li>
+        <li><i class="fa-solid fa-check"></i> AI Analytics</li>
+        <li><i class="fa-solid fa-check"></i> Predictive Maintenance</li>
+        <li><i class="fa-solid fa-check"></i> SMS + WhatsApp Alerts</li>
+        <li><i class="fa-solid fa-check"></i> Carbon Reports</li>
+      </ul>
+      <a href="#contact" class="btn btn-primary w-full magnetic">Start Free Trial</a>
+    </div>
+    <div class="price glass reveal">
+      <h3>Enterprise</h3>
+      <div class="price-value">₹6,000<span>/month</span></div>
+      <ul>
+        <li><i class="fa-solid fa-check"></i> Unlimited Meters</li>
+        <li><i class="fa-solid fa-check"></i> Multi-Factory</li>
+        <li><i class="fa-solid fa-check"></i> Dedicated AI Model</li>
+        <li><i class="fa-solid fa-check"></i> 24/7 Support</li>
+        <li><i class="fa-solid fa-check"></i> Custom Integrations</li>
+      </ul>
+      <a href="#contact" class="btn btn-outline w-full">Contact Sales</a>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section class="roadmap container" id="roadmap">
+  <div class="section-head reveal">
+    <div class="eyebrow">Roadmap</div>
+    <h2>Where we're <span class="grad-alt">headed</span></h2>
+  </div>
+  <div class="road-timeline">
+    <div class="road-item reveal"><div class="dot"></div><h4>MVP</h4><p>Live monitoring + AI alerts</p></div>
+    <div class="road-item reveal"><div class="dot"></div><h4>Predictive Maintenance</h4><p>ML on vibration + current</p></div>
+    <div class="road-item reveal"><div class="dot"></div><h4>Carbon Analytics</h4><p>ESG-ready reporting</p></div>
+    <div class="road-item reveal"><div class="dot"></div><h4>Multi-Factory</h4><p>Fleet-wide intelligence</p></div>
+    <div class="road-item reveal"><div class="dot"></div><h4>Renewables</h4><p>Solar + battery integration</p></div>
+    <div class="road-item reveal"><div class="dot"></div><h4>AI Optimization</h4><p>Autonomous energy control</p></div>
+  </div>
+</section>
+
+<!-- TECH STACK -->
+<section class="stack container">
+  <div class="section-head reveal">
+    <div class="eyebrow">Built With</div>
+    <h2>A modern, industrial-grade <span class="grad">stack</span></h2>
+  </div>
+  <div class="stack-grid reveal">
+    <div class="tech"><i class="fa-brands fa-html5"></i><span>HTML</span></div>
+    <div class="tech"><i class="fa-brands fa-css3-alt"></i><span>CSS</span></div>
+    <div class="tech"><i class="fa-brands fa-js"></i><span>JavaScript</span></div>
+    <div class="tech"><i class="fa-brands fa-python"></i><span>Python</span></div>
+    <div class="tech"><i class="fa-solid fa-bolt"></i><span>FastAPI</span></div>
+    <div class="tech"><i class="fa-solid fa-database"></i><span>PostgreSQL</span></div>
+    <div class="tech"><i class="fa-solid fa-tower-broadcast"></i><span>MQTT</span></div>
+    <div class="tech"><i class="fa-brands fa-docker"></i><span>Docker</span></div>
+    <div class="tech"><i class="fa-brands fa-aws"></i><span>AWS</span></div>
+    <div class="tech"><i class="fa-solid fa-robot"></i><span>AI</span></div>
+    <div class="tech"><i class="fa-solid fa-industry"></i><span>Industrial IoT</span></div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq container" id="faq">
+  <div class="section-head reveal">
+    <div class="eyebrow">FAQ</div>
+    <h2>Frequently asked <span class="grad">questions</span></h2>
+  </div>
+  <div class="faq-list reveal">
+    <div class="faq-item"><button class="faq-q">What is EnergyOS?<i class="fa-solid fa-plus"></i></button><div class="faq-a"><p>EnergyOS is an AI-powered energy operating system that monitors, predicts and optimizes electricity usage across your factory — without replacing existing machines.</p></div></div>
+    <div class="faq-item"><button class="faq-q">How does it work?<i class="fa-solid fa-plus"></i></button><div class="faq-a"><p>Smart meters read your existing electrical panels via RS485, stream to our gateway and cloud, and our AI engine analyses patterns to give you insights, alerts and predictions in real time.</p></div></div>
+    <div class="faq-item"><button class="faq-q">Do I need to replace machines?<i class="fa-solid fa-plus"></i></button><div class="faq-a"><p>No. EnergyOS is 100% retrofit — it works with any existing machine, new or decades old.</p></div></div>
+    <div class="faq-item"><button class="faq-q">Is a PLC required?<i class="fa-solid fa-plus"></i></button><div class="faq-a"><p>No PLC required. Our gateway handles all communication and edge intelligence.</p></div></div>
+    <div class="faq-item"><button class="faq-q">Can it monitor old factories?<i class="fa-solid fa-plus"></i></button><div class="faq-a"><p>Absolutely — that's exactly what we're designed for. MSMEs with legacy infrastructure are our primary customers.</p></div></div>
+    <div class="faq-item"><button class="faq-q">How are alerts delivered?<i class="fa-solid fa-plus"></i></button><div class="faq-a"><p>SMS, WhatsApp, Email, and in-dashboard notifications — with role-based routing to the right person automatically.</p></div></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta container" id="contact">
+  <div class="cta-inner glass reveal">
+    <div class="cta-glow"></div>
+    <h2>Ready to transform your <span class="grad">factory</span>?</h2>
+    <p>Join forward-thinking MSMEs saving lakhs every month with EnergyOS.</p>
+    <div class="cta-actions">
+      <a href="./project.pdf" target="_blank" class="btn btn-primary magnetic btn-lg"><i class="fa-solid fa-file-lines"></i> View Project Plan</a>
+      <a href="./dashboard.html" class="btn btn-outline magnetic btn-lg"><i class="fa-solid fa-rocket"></i> Launch Demo Dashboard</a>
+      <a href="mailto:hello@energyos.ai" class="btn btn-text"><i class="fa-solid fa-envelope"></i> Contact Team</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container footer-grid">
+    <div>
+      <a href="#home" class="logo"><span class="logo-mark"><i class="fa-solid fa-bolt"></i></span> EnergyOS</a>
+      <p class="foot-desc">The AI Energy Operating System purpose-built for MSMEs and industrial factories.</p>
+      <div class="socials">
+        <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+        <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+        <a href="#" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+        <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+      </p>
+    </div>
+    <div>
+      <h5>Product</h5>
+      <a href="#features">Features</a>
+      <a href="#dashboard">Dashboard</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#roadmap">Roadmap</a>
+    </div>
+    <div>
+      <h5>Company</h5>
+      <a href="#">About</a>
+      <a href="#">Careers</a>
+      <a href="#">Blog</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <div>
+      <h5>Contact</h5>
+      <a href="mailto:hello@energyos.ai"><i class="fa-solid fa-envelope"></i> hello@energyos.ai</a>
+      <a href="tel:+919999999999"><i class="fa-solid fa-phone"></i> +91 99999 99999</a>
+      <a href="#"><i class="fa-solid fa-location-dot"></i> Bangalore, India</a>
+    </div>
+  </div>
+  <div class="foot-bottom container">
+    <span>© <span id="year"></span> EnergyOS. All rights reserved.</span>
+    <span>Made with <i class="fa-solid fa-bolt" style="color:var(--primary)"></i> for a cleaner planet.</span>
+  </div>
+</footer>
+
+<!-- Modal -->
+<div class="modal" id="modal" aria-hidden="true">
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-panel glass">
+    <button class="modal-close" data-close aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script src="./script.js"></script>
+</body>
+</html>

@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EnergyOS Dashboard</title>
+    <style>
+      :root {
+        --base: #0a0d10;
+        --panel: #12161b;
+        --panel-2: #171c22;
+        --border: #232a32;
+        --amber: #f0a83c;
+        --teal: #2fd1c5;
+        --red: #ef5350;
+        --yellow: #f0b429;
+        --green: #3fc77e;
+        --text: #e7eaed;
+        --sub: #8a94a0;
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+        background: var(--base);
+        color: var(--text);
+      }
+      button, input { font: inherit; }
+      .app {
+        display: flex;
+        min-height: 100vh;
+        background: var(--base);
+      }
+      .sidebar {
+        width: 232px;
+        background: var(--panel);
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        padding: 16px 12px;
+        transition: width 0.3s ease;
+      }
+      .sidebar.collapsed { width: 76px; }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 8px 18px;
+      }
+      .brand-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(135deg, var(--amber), var(--teal));
+        color: #000;
+        font-weight: 800;
+      }
+      .brand-text {
+        font-size: 14px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+      }
+      .brand-text span { color: var(--amber); }
+      .nav button {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border: 0;
+        background: transparent;
+        color: var(--sub);
+        border-radius: 12px;
+        cursor: pointer;
+        margin-bottom: 4px;
+        text-align: left;
+      }
+      .nav button.active {
+        background: rgba(240, 168, 60, 0.14);
+        color: var(--amber);
+      }
+      .nav button:hover { filter: brightness(1.12); }
+      .collapse-btn {
+        margin-top: auto;
+        border: 1px solid var(--border);
+        color: var(--sub);
+        background: transparent;
+        border-radius: 12px;
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        cursor: pointer;
+      }
+      .main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 14px 22px;
+        border-bottom: 1px solid var(--border);
+        background: rgba(18, 22, 27, 0.78);
+        backdrop-filter: blur(10px);
+      }
+      .header .title-block { min-width: 0; }
+      .header .title { font-weight: 700; }
+      .header .sub { font-size: 11px; color: var(--sub); display: flex; gap: 6px; align-items: center; }
+      .search {
+        flex: 1;
+        margin-left: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid var(--border);
+        background: var(--panel-2);
+        padding: 9px 12px;
+        border-radius: 12px;
+        max-width: 320px;
+      }
+      .search input {
+        flex: 1;
+        border: 0;
+        outline: 0;
+        background: transparent;
+        color: var(--text);
+      }
+      .pulse-rail {
+        flex: 1;
+        min-width: 220px;
+        margin-left: 10px;
+      }
+      .pulse-rail svg { width: 100%; height: 40px; }
+      .top-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-left: auto;
+      }
+      .btn-primary, .btn-lite, .menu-btn {
+        border: 0;
+        border-radius: 12px;
+        padding: 9px 12px;
+        cursor: pointer;
+      }
+      .btn-primary {
+        background: linear-gradient(135deg, var(--amber), #f5c36a);
+        color: #000;
+        font-weight: 700;
+      }
+      .btn-lite {
+        background: transparent;
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+      .menu-btn {
+        display: none;
+        background: transparent;
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+      .content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 22px;
+      }
+      .wrap {
+        max-width: 1380px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+      .page-view { display: none; }
+      .page-view.active { display: block; }
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 18px;
+      }
+      .interactive {
+        cursor: pointer;
+        transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+      .interactive:hover {
+        transform: translateY(-2px);
+        border-color: var(--teal);
+        box-shadow: 0 0 0 1px rgba(47, 209, 197, 0.14) inset;
+      }
+      .eyebrow {
+        color: var(--sub);
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        font-size: 11px;
+        font-weight: 700;
+      }
+      .hero {
+        position: relative;
+        overflow: hidden;
+      }
+      .hero::after {
+        content: "";
+        position: absolute;
+        right: -80px;
+        top: -80px;
+        width: 260px;
+        height: 260px;
+        background: radial-gradient(circle, rgba(47, 209, 197, 0.2) 0%, transparent 70%);
+        filter: blur(4px);
+      }
+      .hero-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 20px;
+        position: relative;
+        z-index: 1;
+      }
+      .hero h1 { margin: 4px 0 8px; font-size: 24px; }
+      .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--green);
+        font-weight: 700;
+      }
+      .dot {
+        width: 8px;
+        height: 8px;
+        display: inline-block;
+        border-radius: 999px;
+        background: var(--green);
+        box-shadow: 0 0 10px var(--green);
+      }
+      .hero-note { color: var(--sub); font-size: 14px; line-height: 1.6; margin-top: 12px; max-width: 650px; }
+      .health-card { display: flex; align-items: center; gap: 14px; padding: 14px; border-radius: 16px; background: var(--panel-2); border: 1px solid var(--border); }
+      .health-card .score { font-size: 32px; font-weight: 700; }
+      .kpi-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 14px; }
+      .kpi {
+        padding: 14px;
+        border-radius: 16px;
+        background: var(--panel);
+        border: 1px solid var(--border);
+      }
+      .kpi-top { display: flex; justify-content: space-between; align-items: center; }
+      .icon-badge { width: 36px; height: 36px; border-radius: 12px; display: grid; place-items: center; }
+      .delta { display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+      .positive { color: var(--green); background: rgba(63, 199, 126, 0.16); }
+      .negative { color: var(--red); background: rgba(239, 83, 80, 0.16); }
+      .kpi .value { font-size: 22px; font-weight: 700; margin-top: 10px; }
+      .kpi .suffix { color: var(--sub); font-size: 13px; }
+      .spark { height: 36px; margin-top: 8px; }
+      .chart-row { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 14px; }
+      .stats-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 14px; }
+      .stat { padding: 14px; border-radius: 16px; background: var(--panel); border: 1px solid var(--border); }
+      .stat .value { font-size: 20px; font-weight: 700; margin-top: 6px; }
+      .table-wrap { overflow-x: auto; }
+      table { width: 100%; min-width: 720px; border-collapse: collapse; }
+      th, td { padding: 10px 12px; border-top: 1px solid var(--border); text-align: left; }
+      thead th { font-size: 11px; text-transform: uppercase; color: var(--sub); letter-spacing: 0.14em; background: var(--panel); position: sticky; top: 0; z-index: 1; }
+      tbody tr { cursor: pointer; }
+      tbody tr:hover { background: rgba(255,255,255,0.03); }
+      .status-badge { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 5px 8px; font-size: 12px; font-weight: 700; }
+      .health-bar { width: 90px; height: 6px; border-radius: 999px; background: var(--panel-2); overflow: hidden; }
+      .health-bar > div { height: 100%; border-radius: inherit; }
+      .recommendations { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+      .recommendation { display: flex; flex-direction: column; justify-content: space-between; min-height: 215px; }
+      .recommendation .title { margin: 10px 0 8px; font-weight: 700; }
+      .recommendation .savings { color: var(--green); font-size: 18px; font-weight: 700; }
+      .recommendation p { color: var(--sub); font-size: 12px; line-height: 1.6; }
+      .reco-btn { margin-top: 12px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 12px; background: transparent; color: var(--text); display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; }
+      .alerts { display: flex; flex-direction: column; gap: 10px; }
+      .alert-item { border: 1px solid var(--border); background: var(--panel-2); border-radius: 14px; padding: 12px; }
+      .alert-item .top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+      .alert-item .type { font-size: 12px; font-weight: 700; }
+      .alert-item .time { color: var(--sub); font-size: 11px; }
+      .chart-card svg { width: 100%; height: 240px; }
+      .legend { display: flex; gap: 12px; flex-wrap: wrap; color: var(--sub); font-size: 12px; margin-top: 8px; }
+      .legend span { display: flex; align-items: center; gap: 6px; }
+      .legend i { width: 8px; height: 8px; border-radius: 999px; display: inline-block; }
+      .donut { width: 150px; height: 150px; border-radius: 50%; margin: 14px auto; background: conic-gradient(var(--amber) 0 30%, var(--teal) 30% 62%, var(--green) 62% 84%, var(--yellow) 84% 100%); position: relative; }
+      .donut::after { content: ""; position: absolute; inset: 24px; border-radius: 50%; background: var(--panel); }
+      .timeline { display: flex; flex-direction: column; gap: 14px; }
+      .timeline-item { display: flex; gap: 10px; align-items: flex-start; }
+      .line-dot { width: 8px; height: 8px; border-radius: 999px; background: var(--amber); margin-top: 6px; }
+      .timeline-item .time { color: var(--sub); font-size: 11px; margin-bottom: 2px; }
+      .footer { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; color: var(--sub); font-size: 12px; }
+      .trend-tip {
+        position: absolute;
+        background: var(--panel2);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 8px 10px;
+        font-size: 12px;
+        color: var(--text);
+        pointer-events: none;
+        transform: translate(-50%, -120%);
+        min-width: 110px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.28);
+      }
+      .side-panel {
+        position: fixed; right: 0; top: 0; bottom: 0; width: 100%; max-width: 420px; background: var(--panel); border-left: 1px solid var(--border); z-index: 30; transform: translateX(100%); transition: transform 0.25s ease; padding: 18px; box-shadow: -16px 0 40px rgba(0,0,0,0.3);
+      }
+      .side-panel.open { transform: translateX(0); }
+      .backdrop {
+        position: fixed; inset: 0; background: rgba(0,0,0,0.38); z-index: 20; display: none;
+      }
+      .backdrop.show { display: block; }
+      .sidebar-backdrop {
+        position: fixed; inset: 0; background: rgba(0,0,0,0.38); z-index: 40; display: none;
+      }
+      .sidebar-backdrop.show { display: block; }
+      .feature-backdrop {
+        position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 50; display: none;
+      }
+      .feature-screen {
+        position: fixed; inset: 18px; z-index: 51; display: none; flex-direction: column; background: linear-gradient(135deg, rgba(18,22,27,0.98), rgba(12,15,18,0.96)); border: 1px solid var(--border); border-radius: 24px; padding: 24px; box-shadow: 0 24px 80px rgba(0,0,0,0.45);
+      }
+      .feature-screen.open { display: flex; }
+      .feature-screen .screen-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+      .feature-screen .screen-body { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 16px; padding-top: 14px; }
+      .feature-screen .screen-title { font-size: 24px; font-weight: 700; margin: 6px 0 0; }
+      .feature-screen .screen-copy { color: var(--sub); line-height: 1.7; font-size: 15px; }
+      .feature-screen .screen-chip { display: inline-flex; align-items: center; gap: 8px; width: fit-content; padding: 7px 10px; border-radius: 999px; background: rgba(47,209,197,0.12); color: var(--teal); font-size: 12px; font-weight: 700; }
+      .feature-screen .screen-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+      .feature-screen .screen-actions button { border: 1px solid var(--border); background: var(--panel); color: var(--text); border-radius: 12px; padding: 10px 12px; cursor: pointer; }
+      .feature-screen .screen-card { border: 1px solid var(--border); background: rgba(255,255,255,0.03); border-radius: 16px; padding: 14px; }
+      .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+      .meta-box { padding: 12px; border-radius: 14px; background: var(--panel-2); border: 1px solid var(--border); }
+      .meta-box .label { color: var(--sub); font-size: 12px; }
+      .meta-box .value { margin-top: 6px; font-size: 18px; font-weight: 700; }
+      .action-btn { width: 100%; border: 0; border-radius: 12px; margin-top: 16px; padding: 12px; color: #000; font-weight: 700; background: linear-gradient(135deg, var(--amber), #f5c36a); cursor: pointer; }
+      @media (max-width: 1200px) {
+        .kpi-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .stats-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .chart-row { grid-template-columns: 1fr; }
+        .recommendations { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      }
+      @media (max-width: 900px) {
+        .sidebar { display: none; position: fixed; inset: 0 auto 0 0; width: 280px; max-width: 80%; height: 100%; background: var(--panel); box-shadow: 14px 0 48px rgba(0,0,0,0.35); z-index: 45; transform: translateX(-100%); transition: transform 0.25s ease; }
+        .sidebar.open { display: flex; transform: translateX(0); }
+        .search { flex: 1 1 100%; margin-left: 0; max-width: none; }
+        .pulse-rail { display: none; }
+        .collapse-btn { display: none; }
+        .menu-btn { display: inline-flex; }
+        .top-actions { gap: 8px; width: 100%; justify-content: flex-end; }
+        .header { flex-wrap: wrap; align-items: flex-start; }
+        .title-block { flex: 1 1 100%; }
+        .kpi-grid, .stats-grid, .recommendations { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      }
+      @media (max-width: 640px) {
+        .content { padding: 16px; }
+        .header { padding: 12px 16px; }
+        .hero-row { flex-direction: column; }
+        .kpi-grid, .stats-grid, .recommendations, .grid-2 { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="backdrop" id="backdrop"></div>
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+    <div class="app">
+      <aside class="sidebar" id="sidebar">
+        <div class="brand">
+          <div class="brand-icon">⚡</div>
+          <div class="brand-text">Energy<span>OS</span></div>
+        </div>
+        <nav class="nav">
+          <button class="active" data-page="Dashboard">◼ Dashboard</button>
+          <button data-page="Live Energy">⚡ Live Energy</button>
+          <button data-page="Machines">🖥 Machines</button>
+          <button data-page="AI Insights">🧠 AI Insights</button>
+          <button data-page="Analytics">📊 Analytics</button>
+          <button data-page="Reports">📄 Reports</button>
+          <button data-page="Alerts">🔔 Alerts</button>
+          <button data-page="Carbon">🌿 Carbon</button>
+          <button data-page="Settings">⚙ Settings</button>
+        </nav>
+        <button class="collapse-btn" id="collapseBtn">☰ Collapse</button>
+      </aside>
+
+      <div class="main">
+        <header class="header">
+          <div class="title-block">
+            <div class="title">Vishwakarma Precision Works</div>
+            <div class="sub"><span id="shiftLabel">Morning Shift</span> · <span id="clockLabel">--:--</span></div>
+          </div>
+          <button class="menu-btn" id="mobileMenuBtn">☰</button>
+          <div class="search">
+            <span>🔎</span>
+            <input id="searchInput" placeholder="Search machines, alerts, reports…" />
+          </div>
+          <div class="pulse-rail">
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+              <path id="pulsePath" d="" fill="none" stroke="#2fd1c5" stroke-width="1.4" opacity="0.9"></path>
+            </svg>
+          </div>
+          <div class="top-actions">
+            <button class="btn-primary" id="askEnergyBtn">✨ Ask EnergyOS</button>
+            <button class="btn-lite" id="notificationBtn">🔔</button>
+            <button class="btn-lite">👤 Admin</button>
+          </div>
+        </header>
+
+        <main class="content">
+          <div class="page-view active" id="view-Dashboard">
+            <div class="wrap">
+            <section class="card hero">
+              <div class="hero-row">
+                <div>
+                  <div class="eyebrow">Factory status</div>
+                  <h1>Good morning, Admin</h1>
+                  <div class="status-pill"><span class="dot"></span> Running Efficiently</div>
+                  <div class="hero-note">
+                    Today's energy consumption is <strong>9% lower</strong> than yesterday. Machine <strong>M-07</strong> is consuming unusually high power. Estimated savings if recommendations are followed: <strong>₹2,450</strong>.
+                  </div>
+                </div>
+                <div class="health-card">
+                  <div class="radial">
+                    <svg width="76" height="76" viewBox="0 0 76 76">
+                      <circle cx="38" cy="38" r="30" fill="none" stroke="#232a32" stroke-width="7"></circle>
+                      <circle cx="38" cy="38" r="30" fill="none" stroke="#2fd1c5" stroke-width="7" stroke-linecap="round" transform="rotate(-90 38 38)" stroke-dasharray="188.5" stroke-dashoffset="24.5"></circle>
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="eyebrow">AI health score</div>
+                    <div class="score">87<span style="font-size:16px;color:var(--sub)">/100</span></div>
+                    <div style="color:var(--green);font-size:12px">+3 vs. last week</div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="kpi-grid" id="kpiGrid"></section>
+
+            <section class="card">
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+                <div>
+                  <div class="eyebrow">Energy consumption trend</div>
+                  <h3 style="margin:4px 0 0;">Last 7 days</h3>
+                </div>
+                <div class="legend">
+                  <span><i style="background:var(--amber)"></i> Actual (kWh)</span>
+                  <span><i style="background:var(--teal)"></i> AI Predicted</span>
+                </div>
+              </div>
+              <div id="trendChart" style="margin-top:12px; position:relative;"></div>
+            </section>
+
+            <section class="stats-grid" id="statsGrid"></section>
+
+            <section class="card table-wrap">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding-bottom:8px;">
+                <div>
+                  <div class="eyebrow">Fleet overview</div>
+                  <h3 style="margin:4px 0 0;">Machine health</h3>
+                </div>
+                <span style="color:var(--sub);font-size:12px" id="machineCount"></span>
+              </div>
+              <div style="max-height:420px; overflow:auto;">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Machine</th>
+                      <th>Status</th>
+                      <th>Power</th>
+                      <th>Efficiency</th>
+                      <th>Health</th>
+                      <th>Running Hrs</th>
+                      <th>Last Maint.</th>
+                    </tr>
+                  </thead>
+                  <tbody id="machineTableBody"></tbody>
+                </table>
+              </div>
+            </section>
+
+            <section>
+              <div class="eyebrow" style="margin-bottom:8px;">AI Recommendations</div>
+              <div class="recommendations" id="recommendations"></div>
+            </section>
+
+            <section class="chart-row">
+              <div class="card">
+                <div class="eyebrow">Live feed</div>
+                <h3 style="margin:4px 0 0;">Recent alerts</h3>
+                <div class="alerts" id="alerts"></div>
+              </div>
+              <div class="card chart-card">
+                <div class="eyebrow">Machine efficiency</div>
+                <h3 style="margin:4px 0 0;">Top 5 machines</h3>
+                <div id="barChart"></div>
+              </div>
+              <div class="card chart-card">
+                <div class="eyebrow">Departments</div>
+                <h3 style="margin:4px 0 0;">Energy usage share</h3>
+                <div id="pieChart"></div>
+              </div>
+            </section>
+
+            <section class="chart-row">
+              <div class="card" style="min-height:270px;">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span>🌿</span><h3 style="margin:0;">Carbon intelligence</h3>
+                </div>
+                <div class="grid-2" style="margin-top:14px;">
+                  <div class="meta-box">
+                    <div class="label">Carbon emitted</div>
+                    <div class="value">4.2t</div>
+                  </div>
+                  <div class="meta-box">
+                    <div class="label">Carbon saved</div>
+                    <div class="value">0.9t</div>
+                  </div>
+                  <div class="meta-box">
+                    <div class="label">Equivalent trees</div>
+                    <div class="value">41</div>
+                  </div>
+                  <div class="meta-box">
+                    <div class="label">Savings potential</div>
+                    <div class="value">12%</div>
+                  </div>
+                </div>
+                <div style="margin-top:14px; padding:12px; border:1px solid var(--border); border-radius:14px; background:rgba(63,199,126,0.08); color:var(--sub); font-size:13px; line-height:1.6;">
+                  Running heavy machines after 6 PM could reduce monthly emissions by <strong style="color:var(--text)">12%</strong>.
+                </div>
+              </div>
+              <div class="card">
+                <div class="eyebrow">Activity</div>
+                <h3 style="margin:4px 0 0;">Recent timeline</h3>
+                <div class="timeline" id="timeline"></div>
+              </div>
+            </section>
+
+            <section class="card footer">
+              <span>📡 Gateway Online</span>
+              <span>☁ Cloud Synced</span>
+              <span>📶 Last sync: 12s ago</span>
+              <span>🛡 EnergyOS v2.4.1</span>
+            </section>
+          </div>
+        </div>
+
+        <div class="page-view" id="view-Live Energy">
+          <div class="wrap">
+            <section class="card hero">
+              <div class="eyebrow">Live Energy</div>
+              <h2 style="margin:8px 0 6px;">Engineer operations dashboard</h2>
+              <p class="hero-note">Realtime metrics for the main meter and each machine. All values refresh live every few seconds.</p>
+            </section>
+            <section class="card">
+              <div class="grid-2" style="gap:14px;">
+                <div class="meta-box">
+                  <div class="label">Main Meter</div>
+                  <div class="value" id="mainMeterVoltage">Voltage 415 V</div>
+                  <div class="value" id="mainMeterCurrent" style="margin-top:8px;font-size:18px;">Current 132 A</div>
+                  <div class="value" id="mainMeterPower" style="margin-top:8px;font-size:18px;">Power 54 kW</div>
+                  <div class="value" id="mainMeterPF" style="margin-top:8px;font-size:18px;">Power Factor 0.94</div>
+                  <div class="value" id="mainMeterFreq" style="margin-top:8px;font-size:18px;">Frequency 50.0 Hz</div>
+                  <div class="value" id="mainMeterKwh" style="margin-top:8px;font-size:18px;">Today's kWh 1,288</div>
+                  <div class="value" id="mainMeterPeak" style="margin-top:8px;font-size:18px;">Peak Demand 182 kW</div>
+                </div>
+                <div class="meta-box" style="display:flex;flex-direction:column;gap:12px;">
+                  <div class="eyebrow">Machine status cards</div>
+                  <div id="liveMachineCards" style="display:grid;grid-template-columns:1fr;gap:12px;"></div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <div class="page-view" id="view-Machines">
+          <div class="wrap">
+            <section class="card">
+              <div class="eyebrow">Machines</div>
+              <h2 style="margin:8px 0 6px;">Machine profiles</h2>
+              <p class="hero-note">Each machine includes live current, power, energy and AI health guidance.</p>
+            </section>
+            <section class="card">
+              <div class="grid-2">
+                <div class="meta-box"><div class="label">Healthy units</div><div class="value" id="machinesHealthyValue"></div></div>
+                <div class="meta-box"><div class="label">Critical units</div><div class="value" id="machinesCriticalValue"></div></div>
+              </div>
+            </section>
+            <section class="card">
+              <div id="machineProfiles" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;"></div>
+            </section>
+          </div>
+        </div>
+
+        <div class="page-view" id="view-AI Insights">
+          <div class="wrap">
+            <section class="card">
+              <div class="eyebrow">AI Insights</div>
+              <h2 style="margin:8px 0 6px;">AI-driven energy decisions</h2>
+              <p class="hero-note">Every recommendation here is generated by the AI engine. No raw sensor details, only actions and predictions.</p>
+            </section>
+            <div class="grid-2" style="gap:14px;">
+              <div class="card">
+                <div class="eyebrow">Energy Waste</div>
+                <div id="aiWaste" style="margin-top:12px;"></div>
+              </div>
+              <div class="card">
+                <div class="eyebrow">Bill Prediction</div>
+                <div id="aiBill" style="margin-top:12px;"></div>
+              </div>
+            </div>
+            <section class="card">
+              <div class="eyebrow">Peak Demand</div>
+              <div id="aiPeakDemand" style="margin-top:12px;"></div>
+            </section>
+            <section class="card">
+              <div class="eyebrow">Machine Efficiency</div>
+              <div id="aiEfficiencyTable" style="margin-top:12px;"></div>
+            </section>
+            <section class="card">
+              <div class="eyebrow">Recommended Actions</div>
+              <div id="aiRecommendations" style="margin-top:12px;"></div>
+            </section>
+          </div>
+        </div>
+
+        <div class="page-view" id="view-Analytics">
+          <div class="wrap">
+            <section class="card">
+              <div class="eyebrow">Analytics</div>
+              <h2 style="margin:8px 0 6px;">Operational trend analysis</h2>
+              <p class="hero-note">The latest trend shows steady improvement in energy efficiency and a strong decline in avoidable peak-hour draw.</p>
+            </section>
+            <section class="card">
+              <div id="analyticsTrendChart"></div>
+            </section>
+          </div>
+        </div>
+
+        <div class="page-view" id="view-Reports">
+          <div class="wrap">
+            <section class="card">
+              <div class="eyebrow">Reports</div>
+              <h2 style="margin:8px 0 6px;">Downloadable reports</h2>
+              <div class="alerts" id="reportsList"></div>
+            </section>
+          </div>
+        </div>
+
+        <div class="page-view" id="view-Alerts">
+          <div class="wrap">
+            <section class="card">
+              <div class="eyebrow">Alerts</div>
+              <h2 style="margin:8px 0 6px;">Open and acknowledged issues</h2>
+              <div class="alerts" id="alertsView"></div>
+            </section>
+          </div>
+        </div>
+
+        <div class="page-view" id="view-Carbon">
+          <div class="wrap">
+            <section class="card">
+              <div class="eyebrow">Carbon</div>
+              <h2 style="margin:8px 0 6px;">Sustainability reporting</h2>
+              <p class="hero-note">AI-based guidance for emissions reduction and solar hour scheduling.</p>
+            </section>
+            <section class="card grid-2">
+              <div class="meta-box"><div class="label">Carbon emitted</div><div class="value" id="carbonEmitted">2.1 Ton</div></div>
+              <div class="meta-box"><div class="label">Carbon saved</div><div class="value" id="carbonSaved">0.7 Ton</div></div>
+              <div class="meta-box"><div class="label">Equivalent trees</div><div class="value" id="carbonTrees">35 Trees</div></div>
+              <div class="meta-box"><div class="label">Recommended window</div><div class="value" id="carbonAdvice">Run machines between solar hours</div></div>
+            </section>
+            <section class="card">
+              <div class="eyebrow">AI suggestion</div>
+              <div id="carbonSuggestion" style="margin-top:12px;color:var(--text);line-height:1.6;">Run machines between solar hours to reduce emissions and maximize green energy use.</div>
+            </section>
+          </div>
+        </div>
+
+        <div class="page-view" id="view-Settings">
+          <div class="wrap">
+            <section class="card">
+              <div class="eyebrow">Settings</div>
+              <h2 style="margin:8px 0 6px;">Control center preferences</h2>
+              <div class="alerts">
+                <div class="alert-item">Email alerts enabled</div>
+                <div class="alert-item">AI auto-actions disabled</div>
+                <div class="alert-item">Dark mode active</div>
+              </div>
+            </section>
+          </div>
+        </div>
+        </main>
+      </div>
+    </div>
+
+    <div class="side-panel" id="sidePanel">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;">
+        <div>
+          <div class="eyebrow" id="panelDept"></div>
+          <h3 id="panelName" style="margin:4px 0 0;"></h3>
+        </div>
+        <button class="btn-lite" id="closePanel">✕</button>
+      </div>
+      <div id="panelStatus" style="margin-top:12px"></div>
+      <div class="grid-2" style="margin-top:16px;">
+        <div class="meta-box">
+          <div class="label">Power draw</div>
+          <div class="value" id="panelPower"></div>
+        </div>
+        <div class="meta-box">
+          <div class="label">Efficiency</div>
+          <div class="value" id="panelEfficiency"></div>
+        </div>
+        <div class="meta-box">
+          <div class="label">Running hours</div>
+          <div class="value" id="panelHours"></div>
+        </div>
+        <div class="meta-box">
+          <div class="label">Last maintenance</div>
+          <div class="value" id="panelMaintenance"></div>
+        </div>
+      </div>
+      <div style="margin-top:16px;">
+        <div style="display:flex;justify-content:space-between;color:var(--sub);font-size:12px;">
+          <span>Health score</span>
+          <span id="panelHealthText"></span>
+        </div>
+        <div class="health-bar" style="width:100%;margin-top:8px;height:8px;">
+          <div id="panelHealthBar"></div>
+        </div>
+      </div>
+      <div style="margin-top:16px; padding:14px; border-radius:14px; background:rgba(47,209,197,0.1); border:1px solid rgba(47,209,197,0.25); color:var(--sub); line-height:1.6; font-size:13px;" id="panelInsight"></div>
+      <button class="action-btn">🛠 Schedule Maintenance</button>
+    </div>
+
+    <div class="feature-backdrop" id="featureBackdrop"></div>
+    <div class="feature-screen" id="featureScreen">
+      <div class="screen-header">
+        <div>
+          <div class="eyebrow">EnergyOS command center</div>
+          <h3 class="screen-title" id="featureTitle"></h3>
+        </div>
+        <button class="btn-lite" id="closeFeatureScreen">✕</button>
+      </div>
+      <div class="screen-body">
+        <div class="screen-chip" id="featureChip">Open workspace</div>
+        <p class="screen-copy" id="featureMessage"></p>
+        <div class="screen-card">
+          <div class="eyebrow">Suggested action</div>
+          <div id="featureAction" style="margin-top:8px; font-weight:700;"></div>
+        </div>
+        <div class="screen-actions">
+          <button id="featurePrimaryBtn">Open details</button>
+          <button id="featureSecondaryBtn">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const COLORS = {
+        base: '#0A0D10', panel: '#12161B', panel2: '#171C22', border: '#232A32',
+        amber: '#F0A83C', teal: '#2FD1C5', red: '#EF5350', yellow: '#F0B429', green: '#3FC77E', text: '#E7EAED', sub: '#8A94A0'
+      };
+      const DEPARTMENTS = ['Production','Assembly','Packaging','Utilities','Administration'];
+      const MACHINE_NAMES = [
+        'CNC Lathe A1','CNC Lathe A2','Hydraulic Press B1','Hydraulic Press B2','Injection Molder C1','Injection Molder C2','Conveyor Line D1','Conveyor Line D2','Air Compressor E1','Air Compressor E2','Robotic Welder F1','Robotic Welder F2','Packaging Line G1','Packaging Line G2','Cooling Tower H1','Cooling Tower H2','Boiler Unit I1','Chiller Unit J1','Paint Booth K1','Extruder L1'
+      ];
+      function seededRandom(seed) { let s = seed; return () => { s = (s * 9301 + 49297) % 233280; return s / 233280; }; }
+      const rnd = seededRandom(42);
+      const machines = MACHINE_NAMES.map((name, i) => {
+        const health = Math.round(40 + rnd() * 60);
+        const status = health > 75 ? 'healthy' : health > 50 ? 'warning' : 'critical';
+        return {
+          id: `M-${String(i + 1).padStart(2, '0')}`,
+          name,
+          dept: DEPARTMENTS[i % DEPARTMENTS.length],
+          status,
+          power: +(3 + rnd() * 22).toFixed(1),
+          efficiency: Math.round(55 + rnd() * 40),
+          health,
+          hours: Math.round(1200 + rnd() * 6000),
+          lastMaint: `${Math.round(2 + rnd() * 40)} days ago`
+        };
+      });
+      const healthy = machines.filter((m) => m.status === 'healthy').length;
+      const warning = machines.filter((m) => m.status === 'warning').length;
+      const critical = machines.filter((m) => m.status === 'critical').length;
+      const weeklyTrend = [
+        { day: 'Mon', kwh: 1240, predicted: 1260 },
+        { day: 'Tue', kwh: 1310, predicted: 1300 },
+        { day: 'Wed', kwh: 1185, predicted: 1220 },
+        { day: 'Thu', kwh: 1420, predicted: 1380 },
+        { day: 'Fri', kwh: 1390, predicted: 1400 },
+        { day: 'Sat', kwh: 980, predicted: 1010 },
+        { day: 'Sun', kwh: 905, predicted: 950 }
+      ];
+      const topFive = [...machines].sort((a, b) => b.efficiency - a.efficiency).slice(0, 5).map((m) => ({ name: m.id, efficiency: m.efficiency }));
+      const deptUsage = DEPARTMENTS.map((d) => ({ name: d, value: machines.filter((m) => m.dept === d).reduce((s, m) => s + m.power, 0).toFixed(0) * 1 }));
+      const recommendations = [
+        { priority: 'High', title: 'Improve Power Factor', savings: '₹3,850 / month', reason: 'Low power factor detected during peak hours on Utilities feeder.', action: 'Review Capacitor Bank' },
+        { priority: 'High', title: 'Shift Load Off-Peak', savings: '₹5,200 / month', reason: 'Injection Molders C1–C2 run heaviest during peak tariff window.', action: 'Reschedule Batch Run' },
+        { priority: 'Medium', title: 'Service Air Compressor E1', savings: '₹1,640 / month', reason: 'Compressor drawing 14% more current than baseline for its load.', action: 'Schedule Maintenance' },
+        { priority: 'Low', title: 'Optimize Cooling Tower Cycles', savings: '₹980 / month', reason: 'Cooling towers idling above setpoint after shift changeover.', action: 'Tune Control Logic' }
+      ];
+      const alerts = [
+        { time: '08:12 AM', machine: 'M-07 · Conveyor Line D1', type: 'Motor Overload', priority: 'critical', action: 'Inspect motor bearings', status: 'Open' },
+        { time: '09:04 AM', machine: 'M-13 · Packaging Line G2', type: 'Voltage Fluctuation', priority: 'warning', action: 'Check feeder connection', status: 'Acknowledged' },
+        { time: '10:47 AM', machine: 'M-05 · Injection Molder C1', type: 'Abnormal Power Spike', priority: 'critical', action: 'Reduce load, inspect heater bank', status: 'Open' },
+        { time: '11:30 AM', machine: 'M-17 · Boiler Unit I1', type: 'Maintenance Reminder', priority: 'info', action: 'Service due in 3 days', status: 'Scheduled' }
+      ];
+      const timeline = [
+        { time: '09:10 AM', text: 'Machine M-04 started' },
+        { time: '09:35 AM', text: 'Energy spike detected on M-05' },
+        { time: '09:40 AM', text: 'AI generated maintenance recommendation' },
+        { time: '09:45 AM', text: 'Operator acknowledged alert' },
+        { time: '10:05 AM', text: 'Machine M-05 returned to normal' }
+      ];
+      const statusMeta = {
+        healthy: { label: 'Healthy', color: COLORS.green },
+        warning: { label: 'Warning', color: COLORS.yellow },
+        critical: { label: 'Critical', color: COLORS.red }
+      };
+      const kpis = [
+        { label: "Today's Energy", value: '1,288', suffix: 'kWh', delta: '9.1%', positive: true, icon: '⚡', color: COLORS.amber, base: 1200 },
+        { label: 'Current Load', value: '182', suffix: 'kW', delta: '2.4%', positive: false, icon: '📈', color: COLORS.teal, base: 180 },
+        { label: "Today's Cost", value: '₹11,556', delta: '6.8%', positive: true, icon: '₹', color: COLORS.yellow, base: 11000 },
+        { label: 'Monthly Bill (Predicted)', value: '₹2.68L', delta: '4.1%', positive: true, icon: '🧾', color: '#7C8CF8', base: 268000 },
+        { label: "Today's Savings", value: '₹2,450', delta: '12%', positive: true, icon: '💰', color: COLORS.green, base: 2200 },
+        { label: 'AI Health Score', value: '87', suffix: '/100', delta: '3 pts', positive: true, icon: '🧭', color: COLORS.amber, base: 85 }
+      ];
+      const liveMainMeter = {
+        voltage: '415 V',
+        current: '132 A',
+        power: '54 kW',
+        pf: '0.94',
+        frequency: '50.0 Hz',
+        todayKwh: '1,288',
+        peakDemand: '182 kW'
+      };
+      const liveMachines = machines.slice(0, 8).map((machine, index) => {
+        const statusMap = { healthy: { label: 'Running', color: COLORS.green }, warning: { label: 'Idle', color: COLORS.yellow }, critical: { label: 'Fault', color: COLORS.red } };
+        return {
+          id: `M-${String(index + 1).padStart(2, '0')}`,
+          name: machine.name,
+          voltage: `${410 + Math.round(rnd() * 6)} V`,
+          current: `${12 + Math.round(rnd() * 10)} A`,
+          power: `${8 + Math.round(rnd() * 12)} kW`,
+          running: `${Math.round(8 + rnd() * 5)} Machines`,
+          stopped: `${Math.round(rnd() * 2)} Machines`,
+          temperature: `${56 + Math.round(rnd() * 18)}°C`,
+          status: statusMap[machine.status] || statusMap.healthy
+        };
+      });
+      const machineProfiles = machines.slice(0, 8).map((machine, index) => ({
+        id: `M-${String(index + 1).padStart(2, '0')}`,
+        name: machine.name,
+        current: `${14 + Math.round(rnd() * 8)} A`,
+        power: `${10 + Math.round(rnd() * 10)} kW`,
+        energy: `${72 + Math.round(rnd() * 20)} kWh`,
+        efficiency: `${72 + Math.round(rnd() * 20)}%`,
+        runningTime: `${6 + Math.round(rnd() * 6)} Hours`,
+        powerHistory: Array.from({ length: 8 }, () => 8 + Math.round(rnd() * 12)),
+        energyTrend: Array.from({ length: 8 }, () => 60 + Math.round(rnd() * 30)),
+        tempTrend: Array.from({ length: 8 }, () => 50 + Math.round(rnd() * 18)),
+        healthScore: 91 - Math.round(rnd() * 10),
+        healthNote: index === 2 ? 'Bearing wear suspected. Power increased 17%. Maintenance recommended within 2 weeks.' : 'Machine operating within expected range.'
+      }));
+      const aiInsights = {
+        waste: {
+          machine: 'Machine 07',
+          summary: 'Consumes electricity after production hours.',
+          loss: '₹8,000/month'
+        },
+        bill: {
+          predicted: '₹2.68 lakh',
+          confidence: '94%'
+        },
+        peakDemand: {
+          when: 'Tomorrow',
+          time: '11:30 AM',
+          expected: '148 kW'
+        },
+        efficiencyList: [
+          { machine: '01', value: '95%' },
+          { machine: '02', value: '82%' },
+          { machine: '03', value: '76%' },
+          { machine: '04', value: '91%' }
+        ],
+        recommendations: [
+          { text: 'Shift Machine 04 to afternoon', savings: '₹12,000' },
+          { text: 'Improve PF', savings: '₹3,500' },
+          { text: 'Shutdown idle motor', savings: '₹5,000' }
+        ]
+      };
+      function createSpark(base, color) { const points = Array.from({ length: 10 }, (_, i) => ({ v: base + Math.sin(i * 0.9) * base * 0.08 + rnd() * base * 0.05 })); const width = 200; const height = 36; const max = Math.max(...points.map((p) => p.v)); const min = Math.min(...points.map((p) => p.v)); const coords = points.map((p, i) => `${(i / (points.length - 1)) * 100},${100 - ((p.v - min) / (max - min || 1)) * 100}`).join(' '); return `<svg viewBox="0 0 100 100" class="spark"><polyline fill="none" stroke="${color}" stroke-width="2" points="${coords}" /></svg>`; }
+      function showFeatureScreen(title, message, chip, action, actionLabel = 'Open details') {
+        document.getElementById('featureTitle').textContent = title;
+        document.getElementById('featureMessage').textContent = message;
+        document.getElementById('featureChip').textContent = chip;
+        document.getElementById('featureAction').textContent = action;
+        document.getElementById('featurePrimaryBtn').textContent = actionLabel;
+        document.getElementById('featureScreen').classList.add('open');
+        document.getElementById('featureBackdrop').style.display = 'block';
+      }
+      function hideFeatureScreen() {
+        document.getElementById('featureScreen').classList.remove('open');
+        document.getElementById('featureBackdrop').style.display = 'none';
+      }
+      function setupInteractiveElements() {
+        document.querySelectorAll('.card, .kpi, .stat, .recommendation, .alert-item, .timeline-item, tbody tr').forEach((el) => {
+          el.classList.add('interactive');
+          if (!el.dataset.title) {
+            const fallback = el.querySelector('h1,h2,h3,.title,.value,.eyebrow')?.textContent?.trim() || 'Dashboard section';
+            el.dataset.title = fallback;
+            el.dataset.detail = 'This section is now interactive. Tap again to explore more details.';
+          }
+        });
+      }
+      function renderKpis() {
+        const g = document.getElementById('kpiGrid');
+        g.innerHTML = kpis.map((k) => `
+          <div class="kpi" data-title="${k.label}" data-detail="${k.label} is showing a live snapshot of today's operational performance.">
+            <div class="kpi-top">
+              <div class="icon-badge" style="background:${k.color}20;color:${k.color}">${k.icon}</div>
+              <div class="delta ${k.positive ? 'positive' : 'negative'}">${k.positive ? '▲' : '▼'} ${k.delta}</div>
+            </div>
+            <div class="eyebrow" style="margin-top:10px;">${k.label}</div>
+            <div class="value">${k.value}<span class="suffix">${k.suffix || ''}</span></div>
+            <div>${createSpark(k.base, k.color)}</div>
+          </div>
+        `).join('');
+      }
+      function renderTrendChart() {
+        const chartTargets = [
+          document.getElementById('trendChart'),
+          document.getElementById('analyticsTrendChart')
+        ].filter(Boolean);
+        const width = 860; const height = 260; const padding = 38;
+        const max = Math.max(...weeklyTrend.map((p) => Math.max(p.kwh, p.predicted))) + 100;
+        const min = Math.min(...weeklyTrend.map((p) => Math.min(p.kwh, p.predicted))) - 100;
+        const toX = (i) => padding + (i / (weeklyTrend.length - 1)) * (width - padding * 2);
+        const toY = (value) => padding + (1 - (value - min) / (max - min || 1)) * (height - padding * 2);
+        const actualPoints = weeklyTrend.map((d, i) => `${toX(i)},${toY(d.kwh)}`).join(' ');
+        const predictedPoints = weeklyTrend.map((d, i) => `${toX(i)},${toY(d.predicted)}`).join(' ');
+        const gridLines = Array.from({ length: 5 }, (_, i) => `<line x1="${padding}" y1="${padding + (i / 4) * (height - padding * 2)}" x2="${width - padding}" y2="${padding + (i / 4) * (height - padding * 2)}" stroke="#232a32" stroke-dasharray="3 3"></line>`).join('');
+        const topValue = 2000;
+        const step = 400;
+        const yLabels = Array.from({ length: Math.floor(topValue / step) + 1 }, (_, i) => {
+          const value = i * step;
+          const y = padding + (1 - value / topValue) * (height - padding * 2);
+          return `<text x="${padding - 10}" y="${y + 4}" text-anchor="end" fill="#8A94A0" font-size="11">${value}</text>`;
+        }).join('');
+        const xLabels = weeklyTrend.map((d, i) => `<text x="${toX(i)}" y="${height - 10}" text-anchor="middle" fill="#8A94A0" font-size="12">${d.day}</text>`).join('');
+        const pointsMarkup = weeklyTrend.map((d, i) => {
+          const x = toX(i);
+          const y = toY(d.kwh);
+          return `
+            <g class="trend-point" data-day="${d.day}" data-kwh="${d.kwh}" data-predicted="${d.predicted}" style="cursor:pointer;">
+              <circle cx="${x}" cy="${y}" r="4.6" fill="${COLORS.amber}" stroke="${COLORS.panel}" stroke-width="2"></circle>
+            </g>
+          `;
+        }).join('');
+        const chartHtml = `
+          <div class="trend-tip" id="trendTip" style="display:none;"></div>
+          <svg viewBox="0 0 ${width} ${height}" width="100%" height="260">
+            <rect x="0" y="0" width="${width}" height="${height}" fill="transparent"></rect>
+            ${gridLines}
+            ${yLabels}
+            <polyline fill="none" stroke="${COLORS.amber}" stroke-width="3" points="${actualPoints}"></polyline>
+            <polyline fill="none" stroke="${COLORS.teal}" stroke-width="2" stroke-dasharray="5 5" points="${predictedPoints}"></polyline>
+            ${pointsMarkup}
+            ${xLabels}
+          </svg>
+        `;
+        chartTargets.forEach((container) => {
+          container.innerHTML = chartHtml;
+          const tip = container.querySelector('.trend-tip');
+          container.querySelectorAll('.trend-point').forEach((point) => {
+            point.addEventListener('mouseenter', (event) => {
+              const { day, kwh, predicted } = point.dataset;
+              tip.innerHTML = `<strong>${day}</strong><br/>Actual: ${kwh} kWh<br/>Predicted: ${predicted} kWh`;
+              tip.style.display = 'block';
+              const rect = container.getBoundingClientRect();
+              tip.style.left = `${event.clientX - rect.left}px`;
+              tip.style.top = `${event.clientY - rect.top}px`;
+            });
+            point.addEventListener('mousemove', (event) => {
+              const rect = container.getBoundingClientRect();
+              tip.style.left = `${event.clientX - rect.left}px`;
+              tip.style.top = `${event.clientY - rect.top}px`;
+            });
+            point.addEventListener('mouseleave', () => {
+              tip.style.display = 'none';
+            });
+          });
+        });
+      }
+      function renderStats() {
+        const root = document.getElementById('statsGrid');
+        const stats = [
+          { icon: '✅', label: 'Healthy Machines', value: healthy, color: COLORS.green },
+          { icon: '⚠', label: 'Under Warning', value: warning, color: COLORS.yellow },
+          { icon: '⛔', label: 'Critical', value: critical, color: COLORS.red },
+          { icon: '⚙', label: 'Avg. Efficiency', value: '78%', color: COLORS.teal },
+          { icon: '⚡', label: 'Power Factor', value: '0.91', color: '#7C8CF8' },
+          { icon: '🌿', label: 'Carbon Emission', value: '4.2t', color: COLORS.amber }
+        ];
+        root.innerHTML = stats.map((s) => `
+          <div class="stat" data-title="${s.label}" data-detail="${s.label} highlights the current health of your energy operations.">
+            <div class="icon-badge" style="background:${s.color}20;color:${s.color}">${s.icon}</div>
+            <div class="value">${s.value}</div>
+            <div style="color:var(--sub);font-size:12px;">${s.label}</div>
+          </div>
+        `).join('');
+      }
+      function renderMachines() {
+        const body = document.getElementById('machineTableBody');
+        const count = document.getElementById('machineCount');
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        const filtered = machines.filter((m) => !query || m.name.toLowerCase().includes(query) || m.id.toLowerCase().includes(query));
+        count.textContent = `${filtered.length} machines`;
+        body.innerHTML = filtered.map((m) => {
+          const meta = statusMeta[m.status];
+          return `
+            <tr data-id="${m.id}">
+              <td>
+                <div style="font-weight:700">${m.name}</div>
+                <div style="font-size:12px;color:var(--sub)">${m.id} · ${m.dept}</div>
+              </td>
+              <td><span class="status-badge" style="background:${meta.color}18;color:${meta.color}">${m.status === 'healthy' ? '✔' : m.status === 'warning' ? '⚠' : '⛔'} ${meta.label}</span></td>
+              <td>${m.power} kW</td>
+              <td>${m.efficiency}%</td>
+              <td>
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <div class="health-bar"><div style="width:${m.health}%;background:${meta.color}"></div></div>
+                  <span>${m.health}</span>
+                </div>
+              </td>
+              <td>${m.hours.toLocaleString()}h</td>
+              <td>${m.lastMaint}</td>
+            </tr>
+          `;
+        }).join('');
+        body.querySelectorAll('tr').forEach((row) => row.addEventListener('click', () => openPanel(filtered.find((m) => m.id === row.dataset.id))));
+      }
+      function renderRecommendations() {
+        document.getElementById('recommendations').innerHTML = recommendations.map((r) => {
+          const color = r.priority === 'High' ? COLORS.red : r.priority === 'Medium' ? COLORS.yellow : COLORS.teal;
+          return `
+            <div class="card recommendation" data-title="${r.title}" data-detail="${r.reason} This recommendation is ready for your next action.">
+              <div>
+                <div class="status-badge" style="background:${color}18;color:${color}">${r.priority} priority</div>
+                <div class="title">${r.title}</div>
+                <div class="eyebrow">Estimated savings</div>
+                <div class="savings">${r.savings}</div>
+                <p>${r.reason}</p>
+              </div>
+              <button class="reco-btn">${r.action} ↗</button>
+            </div>
+          `;
+        }).join('');
+      }
+      function renderAlerts() {
+        document.getElementById('alerts').innerHTML = alerts.map((a) => {
+          const color = a.priority === 'critical' ? COLORS.red : a.priority === 'warning' ? COLORS.yellow : COLORS.teal;
+          return `
+            <div class="alert-item" data-title="${a.type}" data-detail="${a.machine} · ${a.action}">
+              <div class="top">
+                <span class="type" style="color:${color}">${a.type}</span>
+                <span class="time">${a.time}</span>
+              </div>
+              <div style="margin-top:6px;font-size:12px;color:var(--sub)">${a.machine}</div>
+              <div style="margin-top:8px;display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px;">
+                <span>${a.action}</span>
+                <span class="status-badge" style="background:${COLORS.border};color:${COLORS.sub}">${a.status}</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+      function renderBarChart() {
+        const container = document.getElementById('barChart');
+        const max = Math.max(...topFive.map((d) => d.efficiency));
+        container.innerHTML = `
+          <svg viewBox="0 0 320 220" style="margin-top:8px">
+            ${topFive.map((d, i) => {
+              const h = (d.efficiency / max) * 150;
+              const y = 190 - h;
+              const x = 20 + i * 58;
+              return `<g><rect x="${x}" y="${y}" width="34" height="${h}" rx="6" fill="${COLORS.teal}"></rect><text x="${x + 17}" y="205" text-anchor="middle" fill="#8A94A0" font-size="10">${d.name}</text></g>`;
+            }).join('')}
+          </svg>
+        `;
+      }
+      function renderPieChart() {
+        const container = document.getElementById('pieChart');
+        const total = deptUsage.reduce((sum, d) => sum + d.value, 0);
+        let start = 0;
+        const segments = deptUsage.map((d, i) => {
+          const slice = (d.value / total) * 360;
+          const color = ['#F0A83C', '#2FD1C5', '#3FC77E', '#F0B429', '#7C8CF8'][i % 5];
+          const end = start + slice;
+          const result = `${color} ${start}deg ${end}deg`;
+          start = end;
+          return result;
+        });
+        container.innerHTML = `
+          <div class="donut"></div>
+          <div class="legend" style="justify-content:center">
+            ${deptUsage.map((d, i) => `<span><i style="background:${['#F0A83C', '#2FD1C5', '#3FC77E', '#F0B429', '#7C8CF8'][i % 5]}"></i>${d.name}</span>`).join('')}
+          </div>
+        `;
+        container.querySelector('.donut').style.background = `conic-gradient(${segments.join(', ')})`;
+      }
+      function renderLiveEnergyPage() {
+        document.getElementById('mainMeterVoltage').textContent = `Voltage ${liveMainMeter.voltage}`;
+        document.getElementById('mainMeterCurrent').textContent = `Current ${liveMainMeter.current}`;
+        document.getElementById('mainMeterPower').textContent = `Power ${liveMainMeter.power}`;
+        document.getElementById('mainMeterPF').textContent = `Power Factor ${liveMainMeter.pf}`;
+        document.getElementById('mainMeterFreq').textContent = `Frequency ${liveMainMeter.frequency}`;
+        document.getElementById('mainMeterKwh').textContent = `Today's kWh ${liveMainMeter.todayKwh}`;
+        document.getElementById('mainMeterPeak').textContent = `Peak Demand ${liveMainMeter.peakDemand}`;
+        document.getElementById('liveMachineCards').innerHTML = liveMachines.map((machine) => `
+          <div class="card" style="padding:14px;border-radius:16px;border:1px solid var(--border);background:var(--panel-2);">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+              <div>
+                <div class="eyebrow">${machine.id}</div>
+                <div style="font-weight:700;margin-top:8px;">${machine.name}</div>
+              </div>
+              <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:${machine.status.color}18;color:${machine.status.color};font-weight:700;">${machine.status.label}</div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px;font-size:14px;color:var(--text);">
+              <div>Voltage<br><strong>${machine.voltage}</strong></div>
+              <div>Current<br><strong>${machine.current}</strong></div>
+              <div>Power<br><strong>${machine.power}</strong></div>
+              <div>Temperature<br><strong>${machine.temperature}</strong></div>
+              <div>Running<br><strong>${machine.running}</strong></div>
+              <div>Stopped<br><strong>${machine.stopped}</strong></div>
+            </div>
+          </div>
+        `).join('');
+      }
+      function renderMachineProfiles() {
+        document.getElementById('machineProfiles').innerHTML = machineProfiles.map((m, index) => `
+          <div class="card" style="padding:18px;border-radius:20px;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px;">
+              <div>
+                <div class="eyebrow">Machine ${m.id}</div>
+                <div style="font-size:18px;font-weight:700;margin-top:6px;">${m.name}</div>
+              </div>
+              <div style="font-weight:700;color:${COLORS.teal};">Health ${m.healthScore}★</div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:18px;">
+              <div class="meta-box"><div class="label">Current</div><div class="value">${m.current}</div></div>
+              <div class="meta-box"><div class="label">Power</div><div class="value">${m.power}</div></div>
+              <div class="meta-box"><div class="label">Today's Energy</div><div class="value">${m.energy}</div></div>
+              <div class="meta-box"><div class="label">Efficiency</div><div class="value">${m.efficiency}</div></div>
+              <div class="meta-box"><div class="label">Running Time</div><div class="value">${m.runningTime}</div></div>
+            </div>
+            <div style="margin-top:16px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;">
+              <div style="padding:12px;background:rgba(47,209,197,0.08);border-radius:14px;"><div class="eyebrow">Power History</div><div style="margin-top:8px;font-size:13px;color:var(--sub);">${m.powerHistory.join(' / ')} kW</div></div>
+              <div style="padding:12px;background:rgba(240,168,60,0.08);border-radius:14px;"><div class="eyebrow">Energy Trend</div><div style="margin-top:8px;font-size:13px;color:var(--sub);">${m.energyTrend.join(' / ')} kWh</div></div>
+              <div style="padding:12px;background:rgba(239,83,80,0.08);border-radius:14px;"><div class="eyebrow">Temperature Trend</div><div style="margin-top:8px;font-size:13px;color:var(--sub);">${m.tempTrend.join(' / ')} °C</div></div>
+            </div>
+            <div style="margin-top:16px;color:var(--sub);font-size:13px;line-height:1.6;">${m.healthNote}</div>
+          </div>
+        `).join('');
+      }
+      function renderAIInsights() {
+        document.getElementById('aiWaste').innerHTML = `
+          <div style="font-size:16px;font-weight:700;">${aiInsights.waste.machine}</div>
+          <div style="margin-top:10px;">${aiInsights.waste.summary}</div>
+          <div style="margin-top:12px;font-weight:700;color:${COLORS.red};">Estimated loss ${aiInsights.waste.loss}</div>
+        `;
+        document.getElementById('aiBill').innerHTML = `
+          <div style="font-size:16px;font-weight:700;">Predicted Bill</div>
+          <div style="margin-top:10px;font-size:24px;font-weight:700;">${aiInsights.bill.predicted}</div>
+          <div style="margin-top:10px;color:var(--sub);">Confidence ${aiInsights.bill.confidence}</div>
+        `;
+        document.getElementById('aiPeakDemand').innerHTML = `
+          <div style="font-size:16px;font-weight:700;">${aiInsights.peakDemand.when}</div>
+          <div style="margin-top:10px;">Peak expected ${aiInsights.peakDemand.time}</div>
+          <div style="margin-top:10px;font-weight:700;">Expected Load ${aiInsights.peakDemand.expected}</div>
+        `;
+        document.getElementById('aiEfficiencyTable').innerHTML = `
+          <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;">
+            ${aiInsights.efficiencyList.map((item) => `<div class="meta-box"><div class="label">Machine ${item.machine}</div><div class="value">${item.value}</div></div>`).join('')}
+          </div>
+        `;
+        document.getElementById('aiRecommendations').innerHTML = aiInsights.recommendations.map((item) => `
+          <div style="margin-bottom:12px;padding:14px;border-radius:16px;border:1px solid var(--border);background:var(--panel-2);">
+            <div style="font-weight:700;">✓ ${item.text}</div>
+            <div style="margin-top:8px;color:var(--green);">Save ${item.savings}</div>
+          </div>
+        `).join('');
+      }
+      function renderTimeline() {
+        document.getElementById('timeline').innerHTML = timeline.map((item, i) => `
+          <div class="timeline-item" data-title="${item.text}" data-detail="${item.time} · ${item.text}">
+            <div class="line-dot"></div>
+            <div>
+              <div class="time">${item.time}</div>
+              <div>${item.text}</div>
+            </div>
+          </div>
+        `).join('');
+      }
+      function updateClock() {
+        const now = new Date();
+        document.getElementById('clockLabel').textContent = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+        const shift = now.getHours() < 14 ? 'Morning Shift' : now.getHours() < 22 ? 'Evening Shift' : 'Night Shift';
+        document.getElementById('shiftLabel').textContent = shift;
+      }
+      function setActiveView(page) {
+        document.querySelectorAll('.nav button').forEach((btn) => btn.classList.toggle('active', btn.dataset.page === page));
+        document.querySelectorAll('.page-view').forEach((view) => {
+          view.classList.toggle('active', view.id === `view-${page}`);
+        });
+      }
+      function createReportDownloadLink(report) {
+        const content = `Report: ${report.name}\nDate: ${report.date}\nSize: ${report.size}\n\nThis is a placeholder report generated by EnergyOS.`;
+        const href = `data:text/plain;charset=utf-8,${encodeURIComponent(content)}`;
+        const fileName = report.name.toLowerCase().replace(/[^a-z0-9]+/g, '_') + '.txt';
+        return `<a class="btn-lite" style="padding:6px 10px;font-size:12px;white-space:nowrap;" href="${href}" download="${fileName}">Download</a>`;
+      }
+      function renderSecondaryViews() {
+        document.getElementById('machinesHealthyValue').textContent = healthy;
+        document.getElementById('machinesCriticalValue').textContent = critical;
+        const aiInsightsContainer = document.getElementById('aiInsightsCards');
+        if (aiInsightsContainer) {
+          aiInsightsContainer.innerHTML = recommendations.map((r) => `
+            <div class="card recommendation">
+              <div>
+                <div class="title">${r.title}</div>
+                <div class="eyebrow">Estimated savings</div>
+                <div class="savings">${r.savings}</div>
+                <p>${r.reason}</p>
+              </div>
+            </div>
+          `).join('');
+        }
+        document.getElementById('reportsList').innerHTML = [
+          { name: 'Weekly Energy Summary', date: '07 Jul 2026', size: '1.2 MB' },
+          { name: 'Machine Health Audit', date: '05 Jul 2026', size: '860 KB' },
+          { name: 'Electricity Cost Breakdown', date: '01 Jul 2026', size: '540 KB' }
+        ].map((report) => `
+          <div class="alert-item" style="display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;">
+              <strong>${report.name}</strong>
+              <span class="status-badge" style="background:${COLORS.border};color:${COLORS.sub}">${report.size}</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+              <div style="margin-top:6px;color:var(--sub);font-size:12px;">${report.date}</div>
+              ${createReportDownloadLink(report)}
+            </div>
+          </div>
+        `).join('');
+        document.getElementById('alertsView').innerHTML = alerts.map((a) => `
+          <div class="alert-item">
+            <div class="top"><span class="type" style="color:${a.priority === 'critical' ? COLORS.red : a.priority === 'warning' ? COLORS.yellow : COLORS.teal}">${a.type}</span><span class="time">${a.time}</span></div>
+            <div style="margin-top:6px;font-size:12px;color:var(--sub)">${a.machine}</div>
+          </div>
+        `).join('');
+      }
+      function drawPulseRail() {
+        const path = document.getElementById('pulsePath');
+        const points = Array.from({ length: 60 }, (_, i) => 50 + Math.sin(i * 0.5) * 14 + (i % 7 === 0 ? 22 : 0) + rnd() * 6);
+        const d = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${(i / (points.length - 1)) * 100} ${100 - p}`).join(' ');
+        path.setAttribute('d', d);
+      }
+      function openPanel(machine) {
+        if (!machine) return;
+        document.getElementById('panelDept').textContent = `${machine.id} · ${machine.dept}`;
+        document.getElementById('panelName').textContent = machine.name;
+        const meta = statusMeta[machine.status];
+        document.getElementById('panelStatus').innerHTML = `<span class="status-badge" style="background:${meta.color}18;color:${meta.color}">${machine.status === 'healthy' ? '✔' : machine.status === 'warning' ? '⚠' : '⛔'} ${meta.label}</span>`;
+        document.getElementById('panelPower').textContent = `${machine.power} kW`;
+        document.getElementById('panelEfficiency').textContent = `${machine.efficiency}%`;
+        document.getElementById('panelHours').textContent = `${machine.hours.toLocaleString()}h`;
+        document.getElementById('panelMaintenance').textContent = machine.lastMaint;
+        document.getElementById('panelHealthText').textContent = `${machine.health}/100`;
+        const bar = document.getElementById('panelHealthBar');
+        bar.style.width = `${machine.health}%`;
+        bar.style.background = meta.color;
+        document.getElementById('panelInsight').innerHTML = machine.status === 'critical' ? 'This machine shows signs of imminent failure risk. Schedule an inspection within 48 hours to avoid unplanned downtime.' : machine.status === 'warning' ? 'Efficiency has drifted below baseline. A routine check could recover 4–6% output.' : 'Operating within optimal parameters. No action needed.';
+        document.getElementById('sidePanel').classList.add('open');
+        document.getElementById('backdrop').classList.add('show');
+      }
+      function closePanel() {
+        document.getElementById('sidePanel').classList.remove('open');
+        document.getElementById('backdrop').classList.remove('show');
+      }
+      document.getElementById('collapseBtn').addEventListener('click', () => document.getElementById('sidebar').classList.toggle('collapsed'));
+      const sidebar = document.getElementById('sidebar');
+      const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+      document.querySelectorAll('.nav button').forEach((btn) => btn.addEventListener('click', () => {
+        setActiveView(btn.dataset.page);
+        if (window.matchMedia('(max-width: 900px)').matches) {
+          sidebar.classList.remove('open');
+          sidebarBackdrop?.classList.remove('show');
+        }
+      }));
+      const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+      if (mobileMenuBtn) {
+        mobileMenuBtn.addEventListener('click', () => {
+          sidebar.classList.toggle('open');
+          sidebarBackdrop?.classList.toggle('show');
+        });
+      }
+      if (sidebarBackdrop) {
+        sidebarBackdrop.addEventListener('click', () => {
+          sidebar.classList.remove('open');
+          sidebarBackdrop.classList.remove('show');
+        });
+      }
+      document.getElementById('searchInput').addEventListener('input', renderMachines);
+      document.getElementById('closePanel').addEventListener('click', closePanel);
+      document.getElementById('backdrop').addEventListener('click', closePanel);
+      document.getElementById('closeFeatureScreen').addEventListener('click', hideFeatureScreen);
+      document.getElementById('featureBackdrop').addEventListener('click', hideFeatureScreen);
+      document.getElementById('featureSecondaryBtn').addEventListener('click', hideFeatureScreen);
+      document.getElementById('featurePrimaryBtn').addEventListener('click', () => showFeatureScreen('Workspace ready', 'Everything is prepared for the next step in EnergyOS.', 'Ready to proceed', 'You can continue with the next action from here.', 'Continue'));
+      const askBtn = document.getElementById('askEnergyBtn');
+      if (askBtn) {
+        askBtn.addEventListener('click', () => showFeatureScreen(
+          'Ask EnergyOS',
+          'EnergyOS is ready to answer your plant questions and propose actions based on current factory performance.',
+          'AI Assistant',
+          'Type your question or choose a recommendation.',
+          'Start chat'
+        ));
+      }
+      const notificationBtn = document.getElementById('notificationBtn');
+      if (notificationBtn) {
+        notificationBtn.addEventListener('click', () => setActiveView('Alerts'));
+      }
+      document.addEventListener('click', (event) => {
+        const row = event.target.closest('tbody tr');
+        if (row) {
+          const machine = machines.find((m) => m.id === row.dataset.id);
+          openPanel(machine);
+          showFeatureScreen(machine.name, `${machine.id} is currently ${machine.status}. Its health score is ${machine.health} and it is drawing ${machine.power} kW.`, 'Machine detail', `Suggested next step: ${machine.status === 'critical' ? 'Schedule maintenance now.' : 'Review performance during the next shift.'}`, 'Inspect machine');
+          return;
+        }
+        const interactive = event.target.closest('.interactive');
+        if (!interactive) return;
+        const title = interactive.dataset.title || 'Dashboard section';
+        const detail = interactive.dataset.detail || 'This area is interactive.';
+        showFeatureScreen(title, detail, 'Interactive view', 'Open this section to review more operational insight.', 'Open view');
+      });
+      setupInteractiveElements();
+      renderKpis();
+      renderTrendChart();
+      renderStats();
+      renderSecondaryViews();
+      renderMachines();
+      renderRecommendations();
+      renderAlerts();
+      renderBarChart();
+      renderPieChart();
+      renderTimeline();
+      renderLiveEnergyPage();
+      renderMachineProfiles();
+      renderAIInsights();
+      updateClock();
+      drawPulseRail();
+      setInterval(updateClock, 30000);
+    </script>
+  </body>
+</html>
+
