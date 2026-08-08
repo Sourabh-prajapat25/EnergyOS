@@ -363,6 +363,108 @@
         .hero-row { flex-direction: column; }
         .kpi-grid, .stats-grid, .recommendations, .grid-2 { grid-template-columns: 1fr; }
       }
+
+      /* ===== Live simulation demo additions ===== */
+      .demo-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 10px;
+        border-radius: 999px;
+        background: rgba(240, 168, 60, 0.12);
+        border: 1px solid rgba(240, 168, 60, 0.35);
+        color: var(--amber);
+        font-size: 10.5px;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        white-space: nowrap;
+      }
+      .demo-badge .demo-dot {
+        width: 6px; height: 6px; border-radius: 999px; background: var(--amber);
+        box-shadow: 0 0 8px var(--amber);
+        animation: demoPulse 1.6s ease-in-out infinite;
+      }
+      @keyframes demoPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+      .live-tag {
+        display: inline-flex; align-items: center; gap: 6px;
+        color: var(--green); font-weight: 700; font-size: 12px;
+      }
+      .live-tag .dot { animation: demoPulse 1.4s ease-in-out infinite; }
+      .ai-demo-chip {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 4px 9px; border-radius: 999px;
+        background: rgba(124,140,248,0.14); color: #9aa4fb;
+        font-size: 10.5px; font-weight: 800; letter-spacing: 0.05em;
+      }
+
+      /* Toasts */
+      .toast-stack {
+        position: fixed; top: 18px; right: 18px; z-index: 90;
+        display: flex; flex-direction: column; gap: 12px; width: min(360px, calc(100vw - 32px));
+      }
+      .toast {
+        background: linear-gradient(135deg, rgba(23,28,34,0.98), rgba(15,18,22,0.98));
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--amber);
+        border-radius: 14px;
+        padding: 14px 14px 12px;
+        box-shadow: 0 18px 44px rgba(0,0,0,0.45);
+        animation: toastIn 0.35s ease;
+      }
+      .toast.warn { border-left-color: var(--red); }
+      .toast.tip { border-left-color: var(--teal); }
+      .toast.maint { border-left-color: var(--yellow); }
+      @keyframes toastIn { from { transform: translateX(24px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+      .toast .t-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+      .toast .t-title { font-weight: 800; font-size: 13.5px; }
+      .toast .t-close { border: 0; background: transparent; color: var(--sub); cursor: pointer; font-size: 14px; line-height: 1; padding: 2px; }
+      .toast .t-body { margin-top: 8px; color: var(--sub); font-size: 12.5px; line-height: 1.55; }
+      .toast .t-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+      .toast .t-metric { background: var(--panel-2); border: 1px solid var(--border); border-radius: 10px; padding: 8px; }
+      .toast .t-metric .l { font-size: 10px; color: var(--sub); text-transform: uppercase; letter-spacing: 0.08em; }
+      .toast .t-metric .v { font-size: 14px; font-weight: 700; margin-top: 2px; }
+      .toast .t-actions { display: flex; gap: 8px; margin-top: 12px; }
+      .toast .t-actions button { flex: 1; border-radius: 10px; padding: 8px 10px; font-size: 12px; cursor: pointer; }
+      .toast .t-primary { border: 0; background: linear-gradient(135deg, var(--amber), #f5c36a); color: #000; font-weight: 700; }
+      .toast .t-secondary { border: 1px solid var(--border); background: transparent; color: var(--text); }
+
+      /* Demo controls */
+      .demo-controls-btn {
+        border: 1px solid var(--border); background: transparent; color: var(--sub);
+        border-radius: 12px; padding: 9px 10px; cursor: pointer; font-size: 13px;
+      }
+      .demo-controls-panel {
+        position: fixed; bottom: 18px; right: 18px; z-index: 85;
+        background: var(--panel); border: 1px solid var(--border); border-radius: 16px;
+        padding: 14px; width: 230px; box-shadow: 0 18px 44px rgba(0,0,0,0.45);
+        display: none;
+      }
+      .demo-controls-panel.open { display: block; }
+      .demo-controls-panel .dc-row { display: flex; gap: 8px; margin-top: 10px; }
+      .demo-controls-panel button { border: 1px solid var(--border); background: var(--panel-2); color: var(--text); border-radius: 10px; padding: 8px; cursor: pointer; font-size: 12px; flex: 1; }
+      .demo-controls-panel button.active-speed { border-color: var(--amber); color: var(--amber); }
+      .demo-controls-panel .dc-title { font-weight: 700; font-size: 12.5px; display:flex; justify-content:space-between; align-items:center; }
+
+      /* Live chart */
+      .live-chart-wrap { position: relative; }
+      .live-chart-wrap svg { width: 100%; height: 200px; display: block; }
+      .machine-toggle { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 999px; border: 1px solid var(--border); background: var(--panel-2); color: var(--sub); font-size: 11.5px; cursor: pointer; }
+      .machine-toggle.on { color: #000; font-weight: 700; }
+
+      /* Ask EnergyOS modal */
+      .ask-modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 95; display: none; }
+      .ask-modal-backdrop.open { display: block; }
+      .ask-modal {
+        position: fixed; z-index: 96; left: 50%; top: 50%; transform: translate(-50%, -50%);
+        width: min(520px, calc(100vw - 40px)); max-height: 80vh; overflow-y: auto;
+        background: linear-gradient(135deg, rgba(18,22,27,0.98), rgba(12,15,18,0.97));
+        border: 1px solid var(--border); border-radius: 20px; padding: 20px;
+        box-shadow: 0 24px 80px rgba(0,0,0,0.5); display: none;
+      }
+      .ask-modal.open { display: block; }
+      .ask-q-btn { display: block; width: 100%; text-align: left; border: 1px solid var(--border); background: var(--panel-2); color: var(--text); border-radius: 12px; padding: 10px 12px; margin-top: 8px; cursor: pointer; font-size: 13px; }
+      .ask-q-btn:hover { border-color: var(--teal); }
+      .ask-response { margin-top: 14px; padding: 14px; border-radius: 14px; background: rgba(47,209,197,0.08); border: 1px solid rgba(47,209,197,0.25); font-size: 13px; line-height: 1.6; display: none; }
     </style>
   </head>
   <body>
@@ -391,7 +493,10 @@
       <div class="main">
         <header class="header">
           <div class="title-block">
-            <div class="title">Vishwakarma Precision Works</div>
+            <div class="title" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+              Vishwakarma Precision Works
+              <span class="demo-badge"><span class="demo-dot"></span>DEMO · SIMULATED LIVE DATA</span>
+            </div>
             <div class="sub"><span id="shiftLabel">Morning Shift</span> · <span id="clockLabel">--:--</span></div>
           </div>
           <button class="menu-btn" id="mobileMenuBtn">☰</button>
@@ -405,8 +510,9 @@
             </svg>
           </div>
           <div class="top-actions">
+            <button class="demo-controls-btn" id="demoControlsBtn">🎛 Demo</button>
             <button class="btn-primary" id="askEnergyBtn">✨ Ask EnergyOS</button>
-            <button class="btn-lite" id="notificationBtn">🔔</button>
+            <button class="btn-lite" id="notificationBtn" style="position:relative;">🔔<span id="notifBadge" style="display:none;position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;font-size:10px;font-weight:800;border-radius:999px;padding:1px 5px;line-height:1.4;">0</span></button>
             <button class="btn-lite">👤 Admin</button>
           </div>
         </header>
@@ -553,9 +659,17 @@
         <div class="page-view" id="view-Live Energy">
           <div class="wrap">
             <section class="card hero">
-              <div class="eyebrow">Live Energy</div>
-              <h2 style="margin:8px 0 6px;">Engineer operations dashboard</h2>
-              <p class="hero-note">Realtime metrics for the main meter and each machine. All values refresh live every few seconds.</p>
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;">
+                <div>
+                  <div class="eyebrow">Live Energy</div>
+                  <h2 style="margin:8px 0 6px;">Engineer operations dashboard</h2>
+                  <p class="hero-note">Realtime metrics for the main meter and each machine. All values refresh live every second.</p>
+                </div>
+                <div style="text-align:right;">
+                  <div class="live-tag"><span class="dot" style="width:8px;height:8px;border-radius:999px;background:var(--green);box-shadow:0 0 10px var(--green);display:inline-block;"></span> LIVE DATA</div>
+                  <div style="color:var(--sub);font-size:12px;margin-top:4px;" id="liveUpdatedLabel">Updated just now</div>
+                </div>
+              </div>
             </section>
             <section class="card">
               <div class="grid-2" style="gap:14px;">
@@ -574,6 +688,26 @@
                   <div id="liveMachineCards" style="display:grid;grid-template-columns:1fr;gap:12px;"></div>
                 </div>
               </div>
+            </section>
+            <section class="card">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+                <div>
+                  <div class="eyebrow">Real-Time Factory Power</div>
+                  <h3 style="margin:4px 0 0;">Last 60 seconds</h3>
+                </div>
+                <span style="color:var(--sub);font-size:12px;">kW</span>
+              </div>
+              <div class="live-chart-wrap" id="livePowerChart" style="margin-top:10px;"></div>
+            </section>
+            <section class="card">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+                <div>
+                  <div class="eyebrow">Machine Comparison</div>
+                  <h3 style="margin:4px 0 0;">Live power by machine</h3>
+                </div>
+                <div id="machineToggleRow" style="display:flex;gap:8px;flex-wrap:wrap;"></div>
+              </div>
+              <div class="live-chart-wrap" id="machineCompareChart" style="margin-top:10px;"></div>
             </section>
           </div>
         </div>
@@ -600,9 +734,14 @@
         <div class="page-view" id="view-AI Insights">
           <div class="wrap">
             <section class="card">
-              <div class="eyebrow">AI Insights</div>
-              <h2 style="margin:8px 0 6px;">AI-driven energy decisions</h2>
-              <p class="hero-note">Every recommendation here is generated by the AI engine. No raw sensor details, only actions and predictions.</p>
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;">
+                <div>
+                  <div class="eyebrow">AI Insights</div>
+                  <h2 style="margin:8px 0 6px;">AI-driven energy decisions</h2>
+                  <p class="hero-note">Every recommendation here is generated by the simulated AI engine from live factory telemetry. No raw sensor details, only actions and predictions.</p>
+                </div>
+                <span class="ai-demo-chip">🤖 AI Engine Demo</span>
+              </div>
             </section>
             <div class="grid-2" style="gap:14px;">
               <div class="card">
@@ -647,6 +786,7 @@
             <section class="card">
               <div class="eyebrow">Reports</div>
               <h2 style="margin:8px 0 6px;">Downloadable reports</h2>
+              <p class="hero-note">These are demo/simulated energy reports generated from the live simulation. No backend or database is involved.</p>
               <div class="alerts" id="reportsList"></div>
             </section>
           </div>
@@ -692,6 +832,12 @@
                 <div class="alert-item">AI auto-actions disabled</div>
                 <div class="alert-item">Dark mode active</div>
               </div>
+            </section>
+            <section class="card">
+              <div class="eyebrow">Demo</div>
+              <h3 style="margin:8px 0 6px;">Simulation</h3>
+              <p class="hero-note" style="margin-top:0;">Restart the live simulation from a clean baseline state — useful between presentation run-throughs.</p>
+              <button class="btn-lite" id="settingsResetDemo">↻ Reset Demo</button>
             </section>
           </div>
         </div>
@@ -739,6 +885,36 @@
       <button class="action-btn">🛠 Schedule Maintenance</button>
     </div>
 
+    <div class="toast-stack" id="toastStack"></div>
+
+    <div class="demo-controls-panel" id="demoControlsPanel">
+      <div class="dc-title"><span>Demo Controls</span><span id="dcElapsed" style="color:var(--sub);font-weight:400;">0:00</span></div>
+      <div class="dc-row">
+        <button id="dcPlayPause">⏸ Pause</button>
+        <button id="dcReset">↻ Reset</button>
+      </div>
+      <div class="dc-row">
+        <button id="dcSpeed1" class="active-speed">1x</button>
+        <button id="dcSpeed2">2x</button>
+      </div>
+      <div style="margin-top:10px;font-size:11px;color:var(--sub);line-height:1.5;">Alert @30s · Recommendation @60s · Maintenance @120s</div>
+    </div>
+
+    <div class="ask-modal-backdrop" id="askModalBackdrop"></div>
+    <div class="ask-modal" id="askModal">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;">
+        <div>
+          <div class="eyebrow">EnergyOS Assistant</div>
+          <h3 style="margin:6px 0 0;">✨ Ask EnergyOS</h3>
+        </div>
+        <button class="btn-lite" id="askModalClose">✕</button>
+      </div>
+      <p style="color:var(--sub);font-size:13px;line-height:1.6;margin-top:10px;">Ask a question about current plant performance. Responses are generated locally by simulated AI rules.</p>
+      <div id="askQuestions"></div>
+      <div class="ask-response" id="askResponse"></div>
+      <div class="ai-demo-chip" style="margin-top:14px;">🤖 AI Demo Response</div>
+    </div>
+
     <div class="feature-backdrop" id="featureBackdrop"></div>
     <div class="feature-screen" id="featureScreen">
       <div class="screen-header">
@@ -771,26 +947,786 @@
       const MACHINE_NAMES = [
         'CNC Lathe A1','CNC Lathe A2','Hydraulic Press B1','Hydraulic Press B2','Injection Molder C1','Injection Molder C2','Conveyor Line D1','Conveyor Line D2','Air Compressor E1','Air Compressor E2','Robotic Welder F1','Robotic Welder F2','Packaging Line G1','Packaging Line G2','Cooling Tower H1','Cooling Tower H2','Boiler Unit I1','Chiller Unit J1','Paint Booth K1','Extruder L1'
       ];
+      // Realistic per-type baseline power ranges (kW)
+      const TYPE_RANGES = [
+        { match: /CNC Lathe/, min: 6, max: 10 },
+        { match: /Hydraulic Press/, min: 12, max: 20 },
+        { match: /Injection Molder/, min: 15, max: 25 },
+        { match: /Conveyor/, min: 4, max: 8 },
+        { match: /Air Compressor/, min: 18, max: 30 },
+        { match: /Robotic Welder/, min: 8, max: 15 },
+        { match: /Packaging/, min: 5, max: 10 },
+        { match: /Cooling Tower/, min: 12, max: 22 },
+        { match: /Boiler/, min: 14, max: 24 },
+        { match: /Chiller/, min: 20, max: 35 },
+        { match: /Paint Booth/, min: 7, max: 13 },
+        { match: /Extruder/, min: 16, max: 24 }
+      ];
+      function rangeFor(name) {
+        const found = TYPE_RANGES.find((t) => t.match.test(name));
+        return found || { min: 6, max: 14 };
+      }
       function seededRandom(seed) { let s = seed; return () => { s = (s * 9301 + 49297) % 233280; return s / 233280; }; }
       const rnd = seededRandom(42);
-      const machines = MACHINE_NAMES.map((name, i) => {
-        const health = Math.round(40 + rnd() * 60);
-        const status = health > 75 ? 'healthy' : health > 50 ? 'warning' : 'critical';
-        return {
-          id: `M-${String(i + 1).padStart(2, '0')}`,
-          name,
-          dept: DEPARTMENTS[i % DEPARTMENTS.length],
-          status,
-          power: +(3 + rnd() * 22).toFixed(1),
-          efficiency: Math.round(55 + rnd() * 40),
-          health,
-          hours: Math.round(1200 + rnd() * 6000),
-          lastMaint: `${Math.round(2 + rnd() * 40)} days ago`
-        };
-      });
-      const healthy = machines.filter((m) => m.status === 'healthy').length;
-      const warning = machines.filter((m) => m.status === 'warning').length;
-      const critical = machines.filter((m) => m.status === 'critical').length;
+      const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+      const statusMeta = {
+        healthy: { label: 'Healthy', color: COLORS.green },
+        warning: { label: 'Warning', color: COLORS.yellow },
+        critical: { label: 'Critical', color: COLORS.red }
+      };
+      const runStatusMeta = {
+        running: { label: 'Running', color: COLORS.green, dot: '●' },
+        idle: { label: 'Idle', color: COLORS.sub, dot: '●' },
+        warning: { label: 'Warning', color: COLORS.yellow, dot: '⚠' }
+      };
+
+      // ======================================================================
+      // SIMULATION STATE — single source of truth for the entire dashboard
+      // ======================================================================
+      const TARIFF_NORMAL = 7.20;
+      const TARIFF_PEAK = 9.00;
+      const AUX_LOAD_BASE = 15;
+
+      function buildInitialMachines() {
+        return MACHINE_NAMES.map((name, i) => {
+          const range = rangeFor(name);
+          const mid = (range.min + range.max) / 2;
+          const id = `M-${String(i + 1).padStart(2, '0')}`;
+          // one predefined idle machine, one predefined "will become warning" machine (M-07)
+          let runStatus = 'running';
+          if (id === 'M-14') runStatus = 'idle';
+          const health = Math.round(84 + rnd() * 12);
+          return {
+            id,
+            name,
+            dept: DEPARTMENTS[i % DEPARTMENTS.length],
+            min: range.min,
+            max: range.max,
+            baseline: +mid.toFixed(1),
+            power: +mid.toFixed(1),
+            voltage: 415 + (rnd() * 4 - 2),
+            current: 0,
+            pf: +(0.9 + rnd() * 0.06).toFixed(2),
+            energy: +(40 + rnd() * 60).toFixed(2),
+            temperature: +(52 + rnd() * 14).toFixed(1),
+            efficiency: Math.round(82 + rnd() * 13),
+            health,
+            runningHours: Math.round(1200 + rnd() * 6000),
+            lastMaintenance: `${Math.round(2 + rnd() * 40)} days ago`,
+            runStatus,
+            anomaly: id === 'M-07'
+          };
+        });
+      }
+
+      const simulation = {
+        running: true,
+        speed: 1,
+        elapsedSeconds: 0,
+        factory: {
+          voltage: 415.0,
+          frequency: 50.0,
+          pf: 0.95,
+          power: 182,
+          current: 0,
+          energyKwh: 1280.0,
+          peakDemand: 182,
+          cost: 11500,
+          monthlyBill: 268000,
+          savingsToday: 2450,
+          auxLoad: AUX_LOAD_BASE
+        },
+        machines: buildInitialMachines(),
+        ai: { healthScore: 87, status: 'Running Efficiently' },
+        carbon: { emitted: 2.1, saved: 0.7, trees: 35 },
+        powerHistory: Array.from({ length: 60 }, () => 182),
+        machineSeries: {}, // id -> array of last 60 power values
+        notifications: 0,
+        popups: { alert1: false, reco2: false, insight3: false },
+        alerts: [
+          { time: '08:12 AM', machine: 'M-07 · Conveyor Line D1', type: 'Motor Overload', priority: 'critical', action: 'Inspect motor bearings', status: 'Open' },
+          { time: '09:04 AM', machine: 'M-13 · Packaging Line G2', type: 'Voltage Fluctuation', priority: 'warning', action: 'Check feeder connection', status: 'Acknowledged' },
+          { time: '10:47 AM', machine: 'M-05 · Injection Molder C1', type: 'Abnormal Power Spike', priority: 'critical', action: 'Reduce load, inspect heater bank', status: 'Resolved' },
+          { time: '11:30 AM', machine: 'M-17 · Boiler Unit I1', type: 'Maintenance Reminder', priority: 'info', action: 'Service due in 3 days', status: 'Scheduled' }
+        ],
+        timeline: [
+          { time: nowLabel(), text: 'Simulation engine started' },
+          { time: nowLabel(), text: 'Gateway synchronized' }
+        ],
+        recommendations: [
+          { priority: 'High', title: 'Improve Power Factor', savings: '₹3,850 / month', reason: 'Low power factor detected during peak hours on Utilities feeder.', action: 'Review Capacitor Bank' },
+          { priority: 'High', title: 'Shift Load Off-Peak', savings: '₹5,200 / month', reason: 'Injection Molders C1–C2 run heaviest during peak tariff window.', action: 'Reschedule Batch Run' },
+          { priority: 'Medium', title: 'Service Air Compressor E1', savings: '₹1,640 / month', reason: 'Compressor drawing more current than baseline for its load.', action: 'Schedule Maintenance' },
+          { priority: 'Low', title: 'Optimize Cooling Tower Cycles', savings: '₹980 / month', reason: 'Cooling towers idling above setpoint after shift changeover.', action: 'Tune Control Logic' }
+        ]
+      };
+      simulation.machines.forEach((m) => { simulation.machineSeries[m.id] = Array.from({ length: 60 }, () => m.power); });
+
+      function nowLabel() {
+        return new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      }
+      function currentTariff() {
+        const hour = new Date().getHours();
+        return (hour >= 9 && hour < 21) ? TARIFF_PEAK : TARIFF_NORMAL;
+      }
+      function threePhaseCurrent(powerKw, voltage, pf) {
+        return (powerKw * 1000) / (Math.sqrt(3) * voltage * pf);
+      }
+      function walk(value, min, max, step) {
+        const next = value + (rnd() - 0.5) * step;
+        return clamp(next, min, max);
+      }
+
+      // ======================================================================
+      // CORE TICK — advances the simulation by `dt` simulated seconds
+      // ======================================================================
+      function updateSimulation(dt) {
+        const s = simulation;
+        s.elapsedSeconds += dt;
+
+        // --- factory electrical baseline ---
+        s.factory.voltage = walk(s.factory.voltage, 411, 419, 0.6);
+        s.factory.frequency = walk(s.factory.frequency, 49.8, 50.2, 0.05);
+        s.factory.pf = walk(s.factory.pf, 0.90, 0.97, 0.01);
+        s.factory.auxLoad = walk(s.factory.auxLoad, 12, 19, 0.6);
+
+        // --- machines ---
+        let machinePowerTotal = 0;
+        s.machines.forEach((m) => {
+          if (m.runStatus === 'idle') {
+            m.power = walk(m.power, m.min * 0.15, m.min * 0.35, 0.15);
+          } else if (m.id === 'M-07' && s.elapsedSeconds >= 30) {
+            // Demo anomaly: gradual ramp from baseline (~7.4) up to ~8.7kW then hold w/ noise
+            const rampSeconds = clamp(s.elapsedSeconds - 30, 0, 8);
+            const target = m.baseline + (rampSeconds / 8) * (m.baseline * 0.18);
+            m.power = walk(target, target - 0.15, target + 0.15, 0.12);
+            m.runStatus = 'warning';
+          } else {
+            m.power = walk(m.power, m.min, m.max, (m.max - m.min) * 0.05);
+          }
+          m.voltage = walk(m.voltage, 411, 419, 0.5);
+          m.pf = walk(m.pf, 0.88, 0.97, 0.01);
+          m.current = threePhaseCurrent(m.power, m.voltage, m.pf);
+          m.energy += (m.power / 3600) * dt;
+          m.temperature = walk(m.temperature, 42, m.id === 'M-07' ? 88 : 82, 0.5);
+          m.efficiency = Math.round(walk(m.efficiency, 68, 97, 0.6));
+          m.health = clamp(m.health + (rnd() - 0.51) * 0.3, m.id === 'M-07' ? 60 : 70, 98);
+          m.runningHours += dt / 3600;
+          if (m.runStatus !== 'idle') machinePowerTotal += m.power;
+
+          const series = s.machineSeries[m.id];
+          series.push(+m.power.toFixed(2));
+          if (series.length > 60) series.shift();
+        });
+
+        s.factory.power = machinePowerTotal + s.factory.auxLoad;
+        s.factory.current = threePhaseCurrent(s.factory.power, s.factory.voltage, s.factory.pf);
+        s.factory.energyKwh += (s.factory.power / 3600) * dt;
+        s.factory.peakDemand = Math.max(s.factory.peakDemand, +s.factory.power.toFixed(1));
+
+        const tariff = currentTariff();
+        s.factory.cost = s.factory.energyKwh * tariff;
+
+        // Monthly bill prediction: smoothed EMA toward a value derived from today's run-rate
+        const hoursElapsed = Math.max(s.elapsedSeconds / 3600, 0.05);
+        const dailyRate = (s.factory.energyKwh / hoursElapsed) * 24;
+        const projectedMonthly = dailyRate * tariff * 30;
+        const anchoredMonthly = 268000 * 0.4 + projectedMonthly * 0.6; // keep it near the plausible baseline
+        s.factory.monthlyBill = s.factory.monthlyBill + (anchoredMonthly - s.factory.monthlyBill) * 0.01;
+
+        s.factory.savingsToday = walk(s.factory.savingsToday, 2200, 2700, 15);
+
+        // --- AI health score: drifts slowly, dips a little while M-07 anomaly active ---
+        const anomalyActive = s.machines.find((m) => m.id === 'M-07').runStatus === 'warning';
+        const targetHealth = anomalyActive ? 83 : 89;
+        s.ai.healthScore = clamp(s.ai.healthScore + (targetHealth - s.ai.healthScore) * 0.01 + (rnd() - 0.5) * 0.15, 74, 96);
+        s.ai.status = s.ai.healthScore < 78 ? 'Energy Risk Detected' : (anomalyActive ? 'Attention Required' : 'Running Efficiently');
+
+        // --- carbon (correlates with energy consumption) ---
+        s.carbon.emitted = +(s.factory.energyKwh * 0.00082).toFixed(2); // tons, ~0.82 kg CO2/kWh grid factor
+        s.carbon.saved = +(s.carbon.saved + dt * 0.00002).toFixed(3);
+        s.carbon.trees = Math.round(s.carbon.saved * 47);
+
+        // --- rolling live power chart history ---
+        s.powerHistory.push(+s.factory.power.toFixed(1));
+        if (s.powerHistory.length > 60) s.powerHistory.shift();
+
+        // --- periodic timeline chatter ---
+        if (Math.floor(s.elapsedSeconds) % 7 === 0 && dt > 0) {
+          maybeAddTimelineEvent();
+        }
+
+        // --- scripted demo popup sequence ---
+        checkDemoSequence();
+
+        renderLive();
+      }
+
+      function maybeAddTimelineEvent() {
+        const pool = [
+          'Factory telemetry updated',
+          `Machine ${randomMachine().id} load adjusted`,
+          'Gateway synchronized',
+          'Energy pattern analyzed',
+          'Power factor recalibrated',
+          'Cloud sync completed'
+        ];
+        addTimeline(pool[Math.floor(rnd() * pool.length)]);
+      }
+      function randomMachine() { return simulation.machines[Math.floor(rnd() * simulation.machines.length)]; }
+      function addTimeline(text) {
+        simulation.timeline.unshift({ time: nowLabel(), text });
+        simulation.timeline = simulation.timeline.slice(0, 8);
+      }
+
+      // ======================================================================
+      // SCRIPTED DEMO POPUP SEQUENCE (30s / 60s / 120s)
+      // ======================================================================
+      function checkDemoSequence() {
+        const s = simulation;
+        if (!s.popups.alert1 && s.elapsedSeconds >= 30) {
+          s.popups.alert1 = true;
+          const m07 = s.machines.find((m) => m.id === 'M-07');
+          const current = m07.power.toFixed(1);
+          showToast({
+            kind: 'warn',
+            icon: '⚠',
+            title: 'Energy Anomaly Detected',
+            subtitle: 'M-07 · Conveyor Line D1',
+            body: 'Power consumption is approximately 18% above its recent operating baseline.',
+            metrics: [
+              { l: 'Current Power', v: `${current} kW` },
+              { l: 'Normal Baseline', v: `${m07.baseline.toFixed(1)} kW` }
+            ],
+            note: 'Potential cause: Increased mechanical load or developing motor/bearing resistance.',
+            action: 'Inspect the conveyor motor and bearing condition.',
+            primaryLabel: 'View Insight',
+            onPrimary: () => setActiveView('AI Insights')
+          });
+          addAlert({ time: nowLabel(), machine: 'M-07 · Conveyor Line D1', type: 'Motor Load Anomaly', priority: 'warning', action: 'Inspect the conveyor motor and bearing condition.', status: 'Open', fresh: true });
+          addTimeline('M-07 abnormal load detected');
+          addTimeline('AI recommendation generated');
+        }
+        if (!s.popups.reco2 && s.elapsedSeconds >= 60) {
+          s.popups.reco2 = true;
+          showToast({
+            kind: 'tip',
+            icon: '💡',
+            title: 'Energy Saving Recommendation',
+            subtitle: 'Peak-hour load shifting',
+            body: 'Machine 04 and Machine 05 are contributing strongly to peak-hour demand. Shifting a portion of their heavy-load operation outside the peak tariff window could reduce avoidable electricity cost.',
+            metrics: [{ l: 'Estimated Saving', v: '₹4,800/mo' }],
+            action: 'Shift selected batch operations to an off-peak period.',
+            primaryLabel: 'View Recommendation',
+            onPrimary: () => setActiveView('AI Insights')
+          });
+          simulation.recommendations.unshift({ priority: 'High', title: 'Shift Peak-Hour Batch Load', savings: '₹4,800 / month', reason: 'Machine 04 and Machine 05 are contributing strongly to peak-hour demand.', action: 'Reschedule Batch Run' });
+          addTimeline('Energy-saving recommendation generated');
+        }
+        if (!s.popups.insight3 && s.elapsedSeconds >= 120) {
+          s.popups.insight3 = true;
+          showToast({
+            kind: 'maint',
+            icon: '🛠',
+            title: 'Preventive Maintenance Insight',
+            subtitle: 'Air Compressor E1',
+            body: 'The compressor is drawing approximately 13–15% more power than expected for its current load.',
+            metrics: [{ l: 'Estimated Saving', v: '₹1,600/mo' }],
+            note: 'Possible reason: Filter restriction, leakage or reduced compressor efficiency.',
+            action: 'Inspect air filter, pressure leakage and compressor condition during the next maintenance window.',
+            primaryLabel: 'View Insight',
+            onPrimary: () => setActiveView('AI Insights')
+          });
+          addAlert({ time: nowLabel(), machine: 'M-09 · Air Compressor E1', type: 'Preventive Maintenance', priority: 'info', action: 'Inspect air filter and pressure leakage.', status: 'Open', fresh: true });
+          addTimeline('Preventive maintenance insight generated');
+        }
+      }
+      function addAlert(alert) {
+        simulation.alerts.unshift(alert);
+        simulation.notifications += 1;
+        renderNotifBadge();
+      }
+
+      // ======================================================================
+      // TOASTS
+      // ======================================================================
+      function showToast({ kind, icon, title, subtitle, body, metrics = [], note, action, primaryLabel = 'View Details', onPrimary }) {
+        const stack = document.getElementById('toastStack');
+        const el = document.createElement('div');
+        el.className = `toast ${kind}`;
+        el.innerHTML = `
+          <div class="t-head">
+            <div class="t-title">${icon} ${title}</div>
+            <button class="t-close">✕</button>
+          </div>
+          ${subtitle ? `<div style="margin-top:4px;color:var(--sub);font-size:11.5px;font-weight:700;">${subtitle}</div>` : ''}
+          <div class="t-body">${body}</div>
+          ${metrics.length ? `<div class="t-metrics">${metrics.map((m) => `<div class="t-metric"><div class="l">${m.l}</div><div class="v">${m.v}</div></div>`).join('')}</div>` : ''}
+          ${note ? `<div class="t-body" style="margin-top:8px;">${note}</div>` : ''}
+          ${action ? `<div class="t-body" style="margin-top:8px;"><strong style="color:var(--text);">Recommended:</strong> ${action}</div>` : ''}
+          <div class="t-actions">
+            <button class="t-primary">${primaryLabel}</button>
+            <button class="t-secondary">Dismiss</button>
+          </div>
+        `;
+        stack.appendChild(el);
+        const remove = () => { el.style.transition = 'opacity 0.25s ease'; el.style.opacity = '0'; setTimeout(() => el.remove(), 250); };
+        el.querySelector('.t-close').addEventListener('click', remove);
+        el.querySelector('.t-secondary').addEventListener('click', remove);
+        el.querySelector('.t-primary').addEventListener('click', () => { if (onPrimary) onPrimary(); remove(); });
+        const timer = setTimeout(remove, 10000);
+        el.addEventListener('mouseenter', () => clearTimeout(timer));
+      }
+
+      // ======================================================================
+      // RENDERING — targeted DOM updates each tick (no full page rebuild)
+      // ======================================================================
+      function fmtKwh(v) { return v.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+      function fmtInr(v) { return `₹${Math.round(v).toLocaleString('en-IN')}`; }
+      function fmtLakh(v) { return `₹${(v / 100000).toFixed(2)}L`; }
+
+      function renderLive() {
+        renderMeterAndKpis();
+        renderMachineTableLive();
+        renderLiveEnergyPageLive();
+        renderMachineProfilesLive();
+        renderAIInsightsLive();
+        renderCarbonLive();
+        renderHeroStatus();
+        renderTimeline();
+        renderAlerts();
+        renderSecondaryAlerts();
+        renderLivePowerChart();
+        renderMachineCompareChart();
+        renderFooterLive();
+      }
+
+      function renderMeterAndKpis() {
+        const f = simulation.factory;
+        const set = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+        set('mainMeterVoltage', `Voltage ${f.voltage.toFixed(1)} V`);
+        set('mainMeterCurrent', `Current ${f.current.toFixed(0)} A`);
+        set('mainMeterPower', `Power ${f.power.toFixed(1)} kW`);
+        set('mainMeterPF', `Power Factor ${f.pf.toFixed(2)}`);
+        set('mainMeterFreq', `Frequency ${f.frequency.toFixed(1)} Hz`);
+        set('mainMeterKwh', `Today's kWh ${fmtKwh(f.energyKwh)}`);
+        set('mainMeterPeak', `Peak Demand ${f.peakDemand.toFixed(1)} kW`);
+
+        const kpiRoot = document.getElementById('kpiGrid');
+        if (kpiRoot && !kpiRoot.dataset.built) buildKpiSkeleton();
+        setKpiValue('kpi-energy', `${fmtKwh(f.energyKwh)}`, 'kWh');
+        setKpiValue('kpi-load', `${f.power.toFixed(1)}`, 'kW');
+        setKpiValue('kpi-cost', fmtInr(f.cost), '');
+        setKpiValue('kpi-bill', fmtLakh(f.monthlyBill), '');
+        setKpiValue('kpi-savings', fmtInr(f.savingsToday), '');
+        setKpiValue('kpi-health', `${Math.round(simulation.ai.healthScore)}`, '/100');
+      }
+      function setKpiValue(id, value, suffix) {
+        const valEl = document.getElementById(id);
+        if (valEl) valEl.innerHTML = `${value}<span class="suffix">${suffix}</span>`;
+      }
+      function buildKpiSkeleton() {
+        const kpis = [
+          { id: 'kpi-energy', label: "Today's Energy", icon: '⚡', color: COLORS.amber, delta: '9.1%', positive: true },
+          { id: 'kpi-load', label: 'Current Load', icon: '📈', color: COLORS.teal, delta: '2.4%', positive: false },
+          { id: 'kpi-cost', label: "Today's Cost", icon: '₹', color: COLORS.yellow, delta: '6.8%', positive: true },
+          { id: 'kpi-bill', label: 'Monthly Bill (Predicted)', icon: '🧾', color: '#7C8CF8', delta: '4.1%', positive: true },
+          { id: 'kpi-savings', label: "Today's Savings", icon: '💰', color: COLORS.green, delta: '12%', positive: true },
+          { id: 'kpi-health', label: 'AI Health Score', icon: '🧭', color: COLORS.amber, delta: '3 pts', positive: true }
+        ];
+        const g = document.getElementById('kpiGrid');
+        g.dataset.built = '1';
+        g.innerHTML = kpis.map((k) => `
+          <div class="kpi" data-title="${k.label}" data-detail="${k.label} is showing a live snapshot of today's operational performance.">
+            <div class="kpi-top">
+              <div class="icon-badge" style="background:${k.color}20;color:${k.color}">${k.icon}</div>
+              <div class="delta ${k.positive ? 'positive' : 'negative'}">${k.positive ? '▲' : '▼'} ${k.delta}</div>
+            </div>
+            <div class="eyebrow" style="margin-top:10px;">${k.label}</div>
+            <div class="value" id="${k.id}"></div>
+          </div>
+        `).join('');
+        setupInteractiveElements();
+      }
+
+      function renderMachineTableLive() {
+        const body = document.getElementById('machineTableBody');
+        const countEl = document.getElementById('machineCount');
+        if (!body) return;
+        const query = (document.getElementById('searchInput')?.value || '').toLowerCase();
+        const filtered = simulation.machines.filter((m) => !query || m.name.toLowerCase().includes(query) || m.id.toLowerCase().includes(query));
+        if (countEl) countEl.textContent = `${filtered.length} machines`;
+        body.innerHTML = filtered.map((m) => {
+          const derivedStatus = m.runStatus === 'warning' ? 'warning' : (m.health < 70 ? 'critical' : m.health < 85 ? 'warning' : 'healthy');
+          const meta = statusMeta[derivedStatus];
+          return `
+            <tr data-id="${m.id}">
+              <td>
+                <div style="font-weight:700">${m.name}</div>
+                <div style="font-size:12px;color:var(--sub)">${m.id} · ${m.dept}</div>
+              </td>
+              <td><span class="status-badge" style="background:${meta.color}18;color:${meta.color}">${derivedStatus === 'healthy' ? '✔' : derivedStatus === 'warning' ? '⚠' : '⛔'} ${meta.label}</span></td>
+              <td>${m.power.toFixed(1)} kW</td>
+              <td>${m.efficiency}%</td>
+              <td>
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <div class="health-bar"><div style="width:${Math.round(m.health)}%;background:${meta.color}"></div></div>
+                  <span>${Math.round(m.health)}</span>
+                </div>
+              </td>
+              <td>${Math.round(m.runningHours).toLocaleString()}h</td>
+              <td>${m.lastMaintenance}</td>
+            </tr>
+          `;
+        }).join('');
+        body.querySelectorAll('tr').forEach((row) => row.addEventListener('click', () => openPanel(filtered.find((m) => m.id === row.dataset.id))));
+
+        const healthyCount = simulation.machines.filter((m) => m.runStatus !== 'warning' && m.health >= 85).length;
+        const warningCount = simulation.machines.filter((m) => m.runStatus === 'warning' || (m.health >= 70 && m.health < 85)).length;
+        const criticalCount = simulation.machines.filter((m) => m.health < 70).length;
+        const statsGrid = document.getElementById('statsGrid');
+        if (statsGrid) {
+          if (!statsGrid.dataset.built) {
+            statsGrid.dataset.built = '1';
+            const stats = [
+              { icon: '✅', id: 'stat-healthy', label: 'Healthy Machines', color: COLORS.green },
+              { icon: '⚠', id: 'stat-warning', label: 'Under Warning', color: COLORS.yellow },
+              { icon: '⛔', id: 'stat-critical', label: 'Critical', color: COLORS.red },
+              { icon: '⚙', id: 'stat-eff', label: 'Avg. Efficiency', color: COLORS.teal },
+              { icon: '⚡', id: 'stat-pf', label: 'Power Factor', color: '#7C8CF8' },
+              { icon: '🌿', id: 'stat-carbon', label: 'Carbon Emission', color: COLORS.amber }
+            ];
+            statsGrid.innerHTML = stats.map((s) => `
+              <div class="stat" data-title="${s.label}" data-detail="${s.label} highlights the current health of your energy operations.">
+                <div class="icon-badge" style="background:${s.color}20;color:${s.color}">${s.icon}</div>
+                <div class="value" id="${s.id}"></div>
+                <div style="color:var(--sub);font-size:12px;">${s.label}</div>
+              </div>
+            `).join('');
+            setupInteractiveElements();
+          }
+          document.getElementById('stat-healthy').textContent = healthyCount;
+          document.getElementById('stat-warning').textContent = warningCount;
+          document.getElementById('stat-critical').textContent = criticalCount;
+          const avgEff = Math.round(simulation.machines.reduce((s, m) => s + m.efficiency, 0) / simulation.machines.length);
+          document.getElementById('stat-eff').textContent = `${avgEff}%`;
+          document.getElementById('stat-pf').textContent = simulation.factory.pf.toFixed(2);
+          document.getElementById('stat-carbon').textContent = `${simulation.carbon.emitted.toFixed(1)}t`;
+        }
+        document.getElementById('machinesHealthyValue') && (document.getElementById('machinesHealthyValue').textContent = healthyCount);
+        document.getElementById('machinesCriticalValue') && (document.getElementById('machinesCriticalValue').textContent = criticalCount);
+      }
+
+      function renderLiveEnergyPageLive() {
+        const container = document.getElementById('liveMachineCards');
+        if (!container) return;
+        const cards = simulation.machines.slice(0, 8);
+        container.innerHTML = cards.map((m) => {
+          const meta = runStatusMeta[m.runStatus] || runStatusMeta.running;
+          return `
+          <div class="card" style="padding:14px;border-radius:16px;border:1px solid var(--border);background:var(--panel-2);">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+              <div>
+                <div class="eyebrow">${m.id}</div>
+                <div style="font-weight:700;margin-top:8px;">${m.name}</div>
+              </div>
+              <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:${meta.color}18;color:${meta.color};font-weight:700;">${meta.dot} ${meta.label}</div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px;font-size:14px;color:var(--text);">
+              <div>Voltage<br><strong>${m.voltage.toFixed(1)} V</strong></div>
+              <div>Current<br><strong>${m.current.toFixed(1)} A</strong></div>
+              <div>Power<br><strong>${m.power.toFixed(1)} kW</strong></div>
+              <div>Temperature<br><strong>${m.temperature.toFixed(1)}°C</strong></div>
+              <div>Efficiency<br><strong>${m.efficiency}%</strong></div>
+              <div>Health<br><strong>${Math.round(m.health)}/100</strong></div>
+            </div>
+          </div>
+        `;
+        }).join('');
+        const label = document.getElementById('liveUpdatedLabel');
+        if (label) label.textContent = `Updated just now · ${nowLabel()}`;
+      }
+
+      function renderMachineProfilesLive() {
+        const container = document.getElementById('machineProfiles');
+        if (!container) return;
+        const machines = simulation.machines.slice(0, 8);
+        container.innerHTML = machines.map((m) => {
+          const series = simulation.machineSeries[m.id].slice(-8);
+          return `
+          <div class="card" style="padding:18px;border-radius:20px;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px;">
+              <div>
+                <div class="eyebrow">Machine ${m.id}</div>
+                <div style="font-size:18px;font-weight:700;margin-top:6px;">${m.name}</div>
+              </div>
+              <div style="font-weight:700;color:${COLORS.teal};">Health ${Math.round(m.health)}★</div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:18px;">
+              <div class="meta-box"><div class="label">Current</div><div class="value">${m.current.toFixed(1)} A</div></div>
+              <div class="meta-box"><div class="label">Power</div><div class="value">${m.power.toFixed(1)} kW</div></div>
+              <div class="meta-box"><div class="label">Today's Energy</div><div class="value">${m.energy.toFixed(1)} kWh</div></div>
+              <div class="meta-box"><div class="label">Efficiency</div><div class="value">${m.efficiency}%</div></div>
+              <div class="meta-box"><div class="label">Running Time</div><div class="value">${Math.round(m.runningHours)} Hours</div></div>
+            </div>
+            <div style="margin-top:16px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;">
+              <div style="padding:12px;background:rgba(47,209,197,0.08);border-radius:14px;"><div class="eyebrow">Power History</div><div style="margin-top:8px;font-size:13px;color:var(--sub);">${series.map((v) => v.toFixed(1)).join(' / ')} kW</div></div>
+              <div style="padding:12px;background:rgba(240,168,60,0.08);border-radius:14px;"><div class="eyebrow">Voltage</div><div style="margin-top:8px;font-size:13px;color:var(--sub);">${m.voltage.toFixed(1)} V</div></div>
+              <div style="padding:12px;background:rgba(239,83,80,0.08);border-radius:14px;"><div class="eyebrow">Temperature</div><div style="margin-top:8px;font-size:13px;color:var(--sub);">${m.temperature.toFixed(1)} °C</div></div>
+            </div>
+            <div style="margin-top:16px;color:var(--sub);font-size:13px;line-height:1.6;">${m.anomaly && m.runStatus === 'warning' ? 'Bearing wear suspected. Power increased above baseline. Maintenance recommended within 2 weeks.' : 'Machine operating within expected range. Live simulated telemetry.'}</div>
+          </div>
+        `;
+        }).join('');
+        document.querySelectorAll('#machineProfiles .card').forEach((card, i) => {
+          card.classList.add('interactive');
+          card.dataset.title = machines[i].name;
+          card.dataset.detail = 'Live simulated telemetry.';
+          card.addEventListener('click', () => openPanel(machines[i]));
+        });
+      }
+
+      function renderAIInsightsLive() {
+        const m07 = simulation.machines.find((m) => m.id === 'M-07');
+        const wastePct = m07.runStatus === 'warning' ? Math.round(((m07.power - m07.baseline) / m07.baseline) * 100) : 0;
+        const wasteEl = document.getElementById('aiWaste');
+        if (wasteEl) wasteEl.innerHTML = `
+          <div style="font-size:16px;font-weight:700;">Machine 07 · Conveyor Line D1</div>
+          <div style="margin-top:10px;">${m07.runStatus === 'warning' ? `Power draw is ${wastePct}% above its recent operating baseline.` : 'Consumes electricity after production hours.'}</div>
+          <div style="margin-top:12px;font-weight:700;color:${COLORS.red};">Estimated loss ₹8,000/month</div>
+        `;
+        const billEl = document.getElementById('aiBill');
+        if (billEl) billEl.innerHTML = `
+          <div style="font-size:16px;font-weight:700;">Predicted Bill</div>
+          <div style="margin-top:10px;font-size:24px;font-weight:700;">${fmtLakh(simulation.factory.monthlyBill)}</div>
+          <div style="margin-top:10px;color:var(--sub);">Confidence 94%</div>
+        `;
+        const peakEl = document.getElementById('aiPeakDemand');
+        if (peakEl) peakEl.innerHTML = `
+          <div style="font-size:16px;font-weight:700;">Today</div>
+          <div style="margin-top:10px;">Peak expected during current peak tariff window</div>
+          <div style="margin-top:10px;font-weight:700;">Current Peak ${simulation.factory.peakDemand.toFixed(1)} kW</div>
+        `;
+        const effEl = document.getElementById('aiEfficiencyTable');
+        if (effEl) {
+          const top = simulation.machines.slice(0, 4);
+          effEl.innerHTML = `
+            <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;">
+              ${top.map((m) => `<div class="meta-box"><div class="label">Machine ${m.id}</div><div class="value">${m.efficiency}%</div></div>`).join('')}
+            </div>
+          `;
+        }
+        const recEl = document.getElementById('aiRecommendations');
+        if (recEl) {
+          recEl.innerHTML = simulation.recommendations.slice(0, 4).map((r) => `
+            <div style="margin-bottom:12px;padding:14px;border-radius:16px;border:1px solid var(--border);background:var(--panel-2);">
+              <div style="font-weight:700;">✓ ${r.title}</div>
+              <div style="margin-top:8px;color:var(--green);">Save ${r.savings}</div>
+            </div>
+          `).join('');
+        }
+        const insightsCards = document.getElementById('aiInsightsCards');
+        if (insightsCards) {
+          insightsCards.innerHTML = simulation.recommendations.map((r) => `
+            <div class="card recommendation">
+              <div>
+                <span class="ai-demo-chip">🤖 AI ENGINE DEMO</span>
+                <div class="title">${r.title}</div>
+                <div class="eyebrow">Estimated savings</div>
+                <div class="savings">${r.savings}</div>
+                <p>${r.reason}</p>
+              </div>
+            </div>
+          `).join('');
+        }
+        renderRecommendationsBoard();
+      }
+
+      function renderRecommendationsBoard() {
+        const root = document.getElementById('recommendations');
+        if (!root) return;
+        root.innerHTML = simulation.recommendations.map((r) => {
+          const color = r.priority === 'High' ? COLORS.red : r.priority === 'Medium' ? COLORS.yellow : COLORS.teal;
+          return `
+            <div class="card recommendation" data-title="${r.title}" data-detail="${r.reason} This recommendation is ready for your next action.">
+              <div>
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap;">
+                  <span class="status-badge" style="background:${color}18;color:${color}">${r.priority} priority</span>
+                  <span class="ai-demo-chip">🤖 AI DEMO</span>
+                </div>
+                <div class="title">${r.title}</div>
+                <div class="eyebrow">Estimated savings</div>
+                <div class="savings">${r.savings}</div>
+                <p>${r.reason}</p>
+              </div>
+              <button class="reco-btn">${r.action} ↗</button>
+            </div>
+          `;
+        }).join('');
+        setupInteractiveElements();
+      }
+
+      function renderCarbonLive() {
+        const c = simulation.carbon;
+        const set = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+        set('carbonEmitted', `${c.emitted.toFixed(1)} Ton`);
+        set('carbonSaved', `${c.saved.toFixed(2)} Ton`);
+        set('carbonTrees', `${c.trees} Trees`);
+      }
+
+      function renderHeroStatus() {
+        const pill = document.querySelector('.status-pill');
+        const note = document.querySelector('.hero-note');
+        if (pill) {
+          const dot = pill.querySelector('.dot');
+          pill.lastChild.textContent = ` ${simulation.ai.status}`;
+          const color = simulation.ai.status === 'Energy Risk Detected' ? COLORS.red : simulation.ai.status === 'Attention Required' ? COLORS.yellow : COLORS.green;
+          pill.style.color = color;
+          if (dot) { dot.style.background = color; dot.style.boxShadow = `0 0 10px ${color}`; }
+        }
+        const scoreEl = document.querySelector('.health-card .score');
+        if (scoreEl) scoreEl.innerHTML = `${Math.round(simulation.ai.healthScore)}<span style="font-size:16px;color:var(--sub)">/100</span>`;
+      }
+
+      function renderTimeline() {
+        const el = document.getElementById('timeline');
+        if (!el) return;
+        el.innerHTML = simulation.timeline.map((item) => `
+          <div class="timeline-item" data-title="${item.text}" data-detail="${item.time} · ${item.text}">
+            <div class="line-dot"></div>
+            <div>
+              <div class="time">${item.time}</div>
+              <div>${item.text}</div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      function renderAlerts() {
+        const el = document.getElementById('alerts');
+        if (!el) return;
+        el.innerHTML = simulation.alerts.slice(0, 6).map((a) => {
+          const color = a.priority === 'critical' ? COLORS.red : a.priority === 'warning' ? COLORS.yellow : COLORS.teal;
+          return `
+            <div class="alert-item" data-title="${a.type}" data-detail="${a.machine} · ${a.action}">
+              <div class="top">
+                <span class="type" style="color:${color}">${a.fresh ? 'NEW · ' : ''}${a.type}</span>
+                <span class="time">${a.time}</span>
+              </div>
+              <div style="margin-top:6px;font-size:12px;color:var(--sub)">${a.machine}</div>
+              <div style="margin-top:8px;display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px;">
+                <span>${a.action}</span>
+                <span class="status-badge" style="background:${COLORS.border};color:${COLORS.sub}">${a.status}</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      function renderSecondaryAlerts() {
+        const el = document.getElementById('alertsView');
+        if (!el) return;
+        el.innerHTML = simulation.alerts.map((a) => `
+          <div class="alert-item">
+            <div class="top"><span class="type" style="color:${a.priority === 'critical' ? COLORS.red : a.priority === 'warning' ? COLORS.yellow : COLORS.teal}">${a.fresh ? 'NEW · ' : ''}${a.type}</span><span class="time">${a.time}</span></div>
+            <div style="margin-top:6px;font-size:12px;color:var(--sub)">${a.machine}</div>
+            <div style="margin-top:6px;font-size:12px;color:var(--sub)">${a.status}</div>
+          </div>
+        `).join('');
+      }
+
+      function renderNotifBadge() {
+        const badge = document.getElementById('notifBadge');
+        if (!badge) return;
+        if (simulation.notifications > 0) {
+          badge.style.display = 'inline-block';
+          badge.textContent = simulation.notifications;
+        } else {
+          badge.style.display = 'none';
+        }
+      }
+
+      function renderFooterLive() {
+        const footer = document.querySelector('.footer');
+        if (!footer) return;
+        const spans = footer.querySelectorAll('span');
+        if (spans[2]) spans[2].textContent = '📶 Last sync: just now';
+        if (spans[3]) spans[3].textContent = '🛡 EnergyOS Demo v2.4.1';
+      }
+
+      // ======================================================================
+      // LIVE CHARTS (SVG, no external library)
+      // ======================================================================
+      function renderLivePowerChart() {
+        const container = document.getElementById('livePowerChart');
+        if (!container) return;
+        const data = simulation.powerHistory;
+        const w = 760, h = 200, pad = 20;
+        const max = Math.max(...data) + 15;
+        const min = Math.max(Math.min(...data) - 15, 0);
+        const toX = (i) => pad + (i / (data.length - 1)) * (w - pad * 2);
+        const toY = (v) => pad + (1 - (v - min) / (max - min || 1)) * (h - pad * 2);
+        const points = data.map((v, i) => `${toX(i)},${toY(v)}`).join(' ');
+        const area = `${points} ${toX(data.length - 1)},${h - pad} ${toX(0)},${h - pad}`;
+        container.innerHTML = `
+          <svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+            <polygon points="${area}" fill="url(#pgrad)" opacity="0.18"></polygon>
+            <defs>
+              <linearGradient id="pgrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="${COLORS.teal}"></stop>
+                <stop offset="100%" stop-color="${COLORS.teal}" stop-opacity="0"></stop>
+              </linearGradient>
+            </defs>
+            <polyline fill="none" stroke="${COLORS.teal}" stroke-width="2.4" points="${points}"></polyline>
+            <circle cx="${toX(data.length - 1)}" cy="${toY(data[data.length - 1])}" r="4" fill="${COLORS.teal}"></circle>
+          </svg>
+        `;
+      }
+
+      const compareSelection = new Set(['factory', 'M-01', 'M-03', 'M-05', 'M-07']);
+      function renderMachineToggles() {
+        const row = document.getElementById('machineToggleRow');
+        if (!row || row.dataset.built) return;
+        row.dataset.built = '1';
+        const options = [{ id: 'factory', label: 'Factory' }, { id: 'M-01', label: 'M-01' }, { id: 'M-03', label: 'M-03' }, { id: 'M-05', label: 'M-05' }, { id: 'M-07', label: 'M-07' }];
+        row.innerHTML = options.map((o) => `<span class="machine-toggle on" data-id="${o.id}" style="background:${swatchColor(o.id)};color:${o.id === 'factory' ? '#000' : '#000'};">${o.label}</span>`).join('');
+        row.querySelectorAll('.machine-toggle').forEach((chip) => {
+          chip.addEventListener('click', () => {
+            const id = chip.dataset.id;
+            if (compareSelection.has(id)) { compareSelection.delete(id); chip.classList.remove('on'); chip.style.background = 'var(--panel-2)'; chip.style.color = 'var(--sub)'; }
+            else { compareSelection.add(id); chip.classList.add('on'); chip.style.background = swatchColor(id); chip.style.color = '#000'; }
+            renderMachineCompareChart();
+          });
+        });
+      }
+      function swatchColor(id) {
+        const map = { factory: COLORS.amber, 'M-01': COLORS.teal, 'M-03': COLORS.green, 'M-05': COLORS.yellow, 'M-07': COLORS.red };
+        return map[id] || COLORS.sub;
+      }
+      function renderMachineCompareChart() {
+        renderMachineToggles();
+        const container = document.getElementById('machineCompareChart');
+        if (!container) return;
+        const w = 760, h = 200, pad = 20;
+        const series = [];
+        if (compareSelection.has('factory')) series.push({ id: 'factory', color: COLORS.amber, data: simulation.powerHistory });
+        ['M-01', 'M-03', 'M-05', 'M-07'].forEach((id) => { if (compareSelection.has(id)) series.push({ id, color: swatchColor(id), data: simulation.machineSeries[id] }); });
+        const allVals = series.flatMap((s) => s.data);
+        const max = (allVals.length ? Math.max(...allVals) : 10) + 10;
+        const min = Math.max((allVals.length ? Math.min(...allVals) : 0) - 10, 0);
+        const len = 60;
+        const toX = (i) => pad + (i / (len - 1)) * (w - pad * 2);
+        const toY = (v) => pad + (1 - (v - min) / (max - min || 1)) * (h - pad * 2);
+        const lines = series.map((s) => {
+          const pts = s.data.map((v, i) => `${toX(i)},${toY(v)}`).join(' ');
+          return `<polyline fill="none" stroke="${s.color}" stroke-width="2" points="${pts}"></polyline>`;
+        }).join('');
+        container.innerHTML = `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">${lines}</svg>`;
+      }
+
+      // ======================================================================
+      // TREND / BAR / PIE (mostly static historical context, kept from original)
+      // ======================================================================
       const weeklyTrend = [
         { day: 'Mon', kwh: 1240, predicted: 1260 },
         { day: 'Tue', kwh: 1310, predicted: 1300 },
@@ -800,105 +1736,119 @@
         { day: 'Sat', kwh: 980, predicted: 1010 },
         { day: 'Sun', kwh: 905, predicted: 950 }
       ];
-      const topFive = [...machines].sort((a, b) => b.efficiency - a.efficiency).slice(0, 5).map((m) => ({ name: m.id, efficiency: m.efficiency }));
-      const deptUsage = DEPARTMENTS.map((d) => ({ name: d, value: machines.filter((m) => m.dept === d).reduce((s, m) => s + m.power, 0).toFixed(0) * 1 }));
-      const recommendations = [
-        { priority: 'High', title: 'Improve Power Factor', savings: '₹3,850 / month', reason: 'Low power factor detected during peak hours on Utilities feeder.', action: 'Review Capacitor Bank' },
-        { priority: 'High', title: 'Shift Load Off-Peak', savings: '₹5,200 / month', reason: 'Injection Molders C1–C2 run heaviest during peak tariff window.', action: 'Reschedule Batch Run' },
-        { priority: 'Medium', title: 'Service Air Compressor E1', savings: '₹1,640 / month', reason: 'Compressor drawing 14% more current than baseline for its load.', action: 'Schedule Maintenance' },
-        { priority: 'Low', title: 'Optimize Cooling Tower Cycles', savings: '₹980 / month', reason: 'Cooling towers idling above setpoint after shift changeover.', action: 'Tune Control Logic' }
-      ];
-      const alerts = [
-        { time: '08:12 AM', machine: 'M-07 · Conveyor Line D1', type: 'Motor Overload', priority: 'critical', action: 'Inspect motor bearings', status: 'Open' },
-        { time: '09:04 AM', machine: 'M-13 · Packaging Line G2', type: 'Voltage Fluctuation', priority: 'warning', action: 'Check feeder connection', status: 'Acknowledged' },
-        { time: '10:47 AM', machine: 'M-05 · Injection Molder C1', type: 'Abnormal Power Spike', priority: 'critical', action: 'Reduce load, inspect heater bank', status: 'Open' },
-        { time: '11:30 AM', machine: 'M-17 · Boiler Unit I1', type: 'Maintenance Reminder', priority: 'info', action: 'Service due in 3 days', status: 'Scheduled' }
-      ];
-      const timeline = [
-        { time: '09:10 AM', text: 'Machine M-04 started' },
-        { time: '09:35 AM', text: 'Energy spike detected on M-05' },
-        { time: '09:40 AM', text: 'AI generated maintenance recommendation' },
-        { time: '09:45 AM', text: 'Operator acknowledged alert' },
-        { time: '10:05 AM', text: 'Machine M-05 returned to normal' }
-      ];
-      const statusMeta = {
-        healthy: { label: 'Healthy', color: COLORS.green },
-        warning: { label: 'Warning', color: COLORS.yellow },
-        critical: { label: 'Critical', color: COLORS.red }
-      };
-      const kpis = [
-        { label: "Today's Energy", value: '1,288', suffix: 'kWh', delta: '9.1%', positive: true, icon: '⚡', color: COLORS.amber, base: 1200 },
-        { label: 'Current Load', value: '182', suffix: 'kW', delta: '2.4%', positive: false, icon: '📈', color: COLORS.teal, base: 180 },
-        { label: "Today's Cost", value: '₹11,556', delta: '6.8%', positive: true, icon: '₹', color: COLORS.yellow, base: 11000 },
-        { label: 'Monthly Bill (Predicted)', value: '₹2.68L', delta: '4.1%', positive: true, icon: '🧾', color: '#7C8CF8', base: 268000 },
-        { label: "Today's Savings", value: '₹2,450', delta: '12%', positive: true, icon: '💰', color: COLORS.green, base: 2200 },
-        { label: 'AI Health Score', value: '87', suffix: '/100', delta: '3 pts', positive: true, icon: '🧭', color: COLORS.amber, base: 85 }
-      ];
-      const liveMainMeter = {
-        voltage: '415 V',
-        current: '132 A',
-        power: '54 kW',
-        pf: '0.94',
-        frequency: '50.0 Hz',
-        todayKwh: '1,288',
-        peakDemand: '182 kW'
-      };
-      const liveMachines = machines.slice(0, 8).map((machine, index) => {
-        const statusMap = { healthy: { label: 'Running', color: COLORS.green }, warning: { label: 'Idle', color: COLORS.yellow }, critical: { label: 'Fault', color: COLORS.red } };
-        return {
-          id: `M-${String(index + 1).padStart(2, '0')}`,
-          name: machine.name,
-          voltage: `${410 + Math.round(rnd() * 6)} V`,
-          current: `${12 + Math.round(rnd() * 10)} A`,
-          power: `${8 + Math.round(rnd() * 12)} kW`,
-          running: `${Math.round(8 + rnd() * 5)} Machines`,
-          stopped: `${Math.round(rnd() * 2)} Machines`,
-          temperature: `${56 + Math.round(rnd() * 18)}°C`,
-          status: statusMap[machine.status] || statusMap.healthy
-        };
-      });
-      const machineProfiles = machines.slice(0, 8).map((machine, index) => ({
-        id: `M-${String(index + 1).padStart(2, '0')}`,
-        name: machine.name,
-        current: `${14 + Math.round(rnd() * 8)} A`,
-        power: `${10 + Math.round(rnd() * 10)} kW`,
-        energy: `${72 + Math.round(rnd() * 20)} kWh`,
-        efficiency: `${72 + Math.round(rnd() * 20)}%`,
-        runningTime: `${6 + Math.round(rnd() * 6)} Hours`,
-        powerHistory: Array.from({ length: 8 }, () => 8 + Math.round(rnd() * 12)),
-        energyTrend: Array.from({ length: 8 }, () => 60 + Math.round(rnd() * 30)),
-        tempTrend: Array.from({ length: 8 }, () => 50 + Math.round(rnd() * 18)),
-        healthScore: 91 - Math.round(rnd() * 10),
-        healthNote: index === 2 ? 'Bearing wear suspected. Power increased 17%. Maintenance recommended within 2 weeks.' : 'Machine operating within expected range.'
-      }));
-      const aiInsights = {
-        waste: {
-          machine: 'Machine 07',
-          summary: 'Consumes electricity after production hours.',
-          loss: '₹8,000/month'
-        },
-        bill: {
-          predicted: '₹2.68 lakh',
-          confidence: '94%'
-        },
-        peakDemand: {
-          when: 'Tomorrow',
-          time: '11:30 AM',
-          expected: '148 kW'
-        },
-        efficiencyList: [
-          { machine: '01', value: '95%' },
-          { machine: '02', value: '82%' },
-          { machine: '03', value: '76%' },
-          { machine: '04', value: '91%' }
-        ],
-        recommendations: [
-          { text: 'Shift Machine 04 to afternoon', savings: '₹12,000' },
-          { text: 'Improve PF', savings: '₹3,500' },
-          { text: 'Shutdown idle motor', savings: '₹5,000' }
-        ]
-      };
-      function createSpark(base, color) { const points = Array.from({ length: 10 }, (_, i) => ({ v: base + Math.sin(i * 0.9) * base * 0.08 + rnd() * base * 0.05 })); const width = 200; const height = 36; const max = Math.max(...points.map((p) => p.v)); const min = Math.min(...points.map((p) => p.v)); const coords = points.map((p, i) => `${(i / (points.length - 1)) * 100},${100 - ((p.v - min) / (max - min || 1)) * 100}`).join(' '); return `<svg viewBox="0 0 100 100" class="spark"><polyline fill="none" stroke="${color}" stroke-width="2" points="${coords}" /></svg>`; }
+      function createSpark(base, color) { const points = Array.from({ length: 10 }, (_, i) => ({ v: base + Math.sin(i * 0.9) * base * 0.08 + rnd() * base * 0.05 })); const max = Math.max(...points.map((p) => p.v)); const min = Math.min(...points.map((p) => p.v)); const coords = points.map((p, i) => `${(i / (points.length - 1)) * 100},${100 - ((p.v - min) / (max - min || 1)) * 100}`).join(' '); return `<svg viewBox="0 0 100 100" class="spark"><polyline fill="none" stroke="${color}" stroke-width="2" points="${coords}" /></svg>`; }
+      function renderTrendChart() {
+        const chartTargets = [document.getElementById('trendChart'), document.getElementById('analyticsTrendChart')].filter(Boolean);
+        const width = 860; const height = 260; const padding = 38;
+        const max = Math.max(...weeklyTrend.map((p) => Math.max(p.kwh, p.predicted))) + 100;
+        const min = Math.min(...weeklyTrend.map((p) => Math.min(p.kwh, p.predicted))) - 100;
+        const toX = (i) => padding + (i / (weeklyTrend.length - 1)) * (width - padding * 2);
+        const toY = (value) => padding + (1 - (value - min) / (max - min || 1)) * (height - padding * 2);
+        const actualPoints = weeklyTrend.map((d, i) => `${toX(i)},${toY(d.kwh)}`).join(' ');
+        const predictedPoints = weeklyTrend.map((d, i) => `${toX(i)},${toY(d.predicted)}`).join(' ');
+        const gridLines = Array.from({ length: 5 }, (_, i) => `<line x1="${padding}" y1="${padding + (i / 4) * (height - padding * 2)}" x2="${width - padding}" y2="${padding + (i / 4) * (height - padding * 2)}" stroke="#232a32" stroke-dasharray="3 3"></line>`).join('');
+        const topValue = 2000; const step = 400;
+        const yLabels = Array.from({ length: Math.floor(topValue / step) + 1 }, (_, i) => { const value = i * step; const y = padding + (1 - value / topValue) * (height - padding * 2); return `<text x="${padding - 10}" y="${y + 4}" text-anchor="end" fill="#8A94A0" font-size="11">${value}</text>`; }).join('');
+        const xLabels = weeklyTrend.map((d, i) => `<text x="${toX(i)}" y="${height - 10}" text-anchor="middle" fill="#8A94A0" font-size="12">${d.day}</text>`).join('');
+        const pointsMarkup = weeklyTrend.map((d, i) => { const x = toX(i); const y = toY(d.kwh); return `<g class="trend-point" data-day="${d.day}" data-kwh="${d.kwh}" data-predicted="${d.predicted}" style="cursor:pointer;"><circle cx="${x}" cy="${y}" r="4.6" fill="${COLORS.amber}" stroke="${COLORS.panel}" stroke-width="2"></circle></g>`; }).join('');
+        const chartHtml = `
+          <div class="trend-tip" id="trendTip" style="display:none;"></div>
+          <svg viewBox="0 0 ${width} ${height}" width="100%" height="260">
+            <rect x="0" y="0" width="${width}" height="${height}" fill="transparent"></rect>
+            ${gridLines}${yLabels}
+            <polyline fill="none" stroke="${COLORS.amber}" stroke-width="3" points="${actualPoints}"></polyline>
+            <polyline fill="none" stroke="${COLORS.teal}" stroke-width="2" stroke-dasharray="5 5" points="${predictedPoints}"></polyline>
+            ${pointsMarkup}${xLabels}
+          </svg>
+        `;
+        chartTargets.forEach((container) => {
+          container.innerHTML = chartHtml;
+          const tip = container.querySelector('.trend-tip');
+          container.querySelectorAll('.trend-point').forEach((point) => {
+            point.addEventListener('mouseenter', (event) => {
+              const { day, kwh, predicted } = point.dataset;
+              tip.innerHTML = `<strong>${day}</strong><br/>Actual: ${kwh} kWh<br/>Predicted: ${predicted} kWh`;
+              tip.style.display = 'block';
+              const rect = container.getBoundingClientRect();
+              tip.style.left = `${event.clientX - rect.left}px`;
+              tip.style.top = `${event.clientY - rect.top}px`;
+            });
+            point.addEventListener('mousemove', (event) => {
+              const rect = container.getBoundingClientRect();
+              tip.style.left = `${event.clientX - rect.left}px`;
+              tip.style.top = `${event.clientY - rect.top}px`;
+            });
+            point.addEventListener('mouseleave', () => { tip.style.display = 'none'; });
+          });
+        });
+      }
+      function renderBarChart() {
+        const container = document.getElementById('barChart');
+        const topFive = [...simulation.machines].sort((a, b) => b.efficiency - a.efficiency).slice(0, 5);
+        const max = Math.max(...topFive.map((d) => d.efficiency));
+        container.innerHTML = `
+          <svg viewBox="0 0 320 220" style="margin-top:8px">
+            ${topFive.map((d, i) => {
+              const hgt = (d.efficiency / max) * 150;
+              const y = 190 - hgt;
+              const x = 20 + i * 58;
+              return `<g><rect x="${x}" y="${y}" width="34" height="${hgt}" rx="6" fill="${COLORS.teal}"></rect><text x="${x + 17}" y="205" text-anchor="middle" fill="#8A94A0" font-size="10">${d.id}</text></g>`;
+            }).join('')}
+          </svg>
+        `;
+      }
+      function renderPieChart() {
+        const container = document.getElementById('pieChart');
+        const deptUsage = DEPARTMENTS.map((d) => ({ name: d, value: simulation.machines.filter((m) => m.dept === d).reduce((s, m) => s + m.power, 0) }));
+        const total = deptUsage.reduce((sum, d) => sum + d.value, 0) || 1;
+        let start = 0;
+        const segments = deptUsage.map((d, i) => {
+          const slice = (d.value / total) * 360;
+          const color = ['#F0A83C', '#2FD1C5', '#3FC77E', '#F0B429', '#7C8CF8'][i % 5];
+          const end = start + slice;
+          const result = `${color} ${start}deg ${end}deg`;
+          start = end;
+          return result;
+        });
+        container.innerHTML = `
+          <div class="donut"></div>
+          <div class="legend" style="justify-content:center">
+            ${deptUsage.map((d, i) => `<span><i style="background:${['#F0A83C', '#2FD1C5', '#3FC77E', '#F0B429', '#7C8CF8'][i % 5]}"></i>${d.name}</span>`).join('')}
+          </div>
+        `;
+        container.querySelector('.donut').style.background = `conic-gradient(${segments.join(', ')})`;
+      }
+
+      function createReportDownloadLink(report) {
+        const content = `Report: ${report.name}\nDate: ${report.date}\nSize: ${report.size}\n\nThis is a demo/simulated report generated by EnergyOS from locally simulated live telemetry. No backend or database is involved.`;
+        const href = `data:text/plain;charset=utf-8,${encodeURIComponent(content)}`;
+        const fileName = report.name.toLowerCase().replace(/[^a-z0-9]+/g, '_') + '.txt';
+        return `<a class="btn-lite" style="padding:6px 10px;font-size:12px;white-space:nowrap;" href="${href}" download="${fileName}">Download</a>`;
+      }
+      function renderReports() {
+        const el = document.getElementById('reportsList');
+        if (!el) return;
+        el.innerHTML = [
+          { name: 'Weekly Energy Summary (Demo)', date: '07 Jul 2026', size: '1.2 MB' },
+          { name: 'Machine Health Audit (Demo)', date: '05 Jul 2026', size: '860 KB' },
+          { name: 'Electricity Cost Breakdown (Demo)', date: '01 Jul 2026', size: '540 KB' }
+        ].map((report) => `
+          <div class="alert-item" style="display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;">
+              <strong>${report.name}</strong>
+              <span class="status-badge" style="background:${COLORS.border};color:${COLORS.sub}">${report.size}</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+              <div style="margin-top:6px;color:var(--sub);font-size:12px;">${report.date}</div>
+              ${createReportDownloadLink(report)}
+            </div>
+          </div>
+        `).join('');
+      }
+
+      // ======================================================================
+      // UI PLUMBING (panels, navigation, search, ask modal, demo controls)
+      // ======================================================================
       function showFeatureScreen(title, message, chip, action, actionLabel = 'Open details') {
         document.getElementById('featureTitle').textContent = title;
         document.getElementById('featureMessage').textContent = message;
@@ -922,295 +1872,6 @@
           }
         });
       }
-      function renderKpis() {
-        const g = document.getElementById('kpiGrid');
-        g.innerHTML = kpis.map((k) => `
-          <div class="kpi" data-title="${k.label}" data-detail="${k.label} is showing a live snapshot of today's operational performance.">
-            <div class="kpi-top">
-              <div class="icon-badge" style="background:${k.color}20;color:${k.color}">${k.icon}</div>
-              <div class="delta ${k.positive ? 'positive' : 'negative'}">${k.positive ? '▲' : '▼'} ${k.delta}</div>
-            </div>
-            <div class="eyebrow" style="margin-top:10px;">${k.label}</div>
-            <div class="value">${k.value}<span class="suffix">${k.suffix || ''}</span></div>
-            <div>${createSpark(k.base, k.color)}</div>
-          </div>
-        `).join('');
-      }
-      function renderTrendChart() {
-        const chartTargets = [
-          document.getElementById('trendChart'),
-          document.getElementById('analyticsTrendChart')
-        ].filter(Boolean);
-        const width = 860; const height = 260; const padding = 38;
-        const max = Math.max(...weeklyTrend.map((p) => Math.max(p.kwh, p.predicted))) + 100;
-        const min = Math.min(...weeklyTrend.map((p) => Math.min(p.kwh, p.predicted))) - 100;
-        const toX = (i) => padding + (i / (weeklyTrend.length - 1)) * (width - padding * 2);
-        const toY = (value) => padding + (1 - (value - min) / (max - min || 1)) * (height - padding * 2);
-        const actualPoints = weeklyTrend.map((d, i) => `${toX(i)},${toY(d.kwh)}`).join(' ');
-        const predictedPoints = weeklyTrend.map((d, i) => `${toX(i)},${toY(d.predicted)}`).join(' ');
-        const gridLines = Array.from({ length: 5 }, (_, i) => `<line x1="${padding}" y1="${padding + (i / 4) * (height - padding * 2)}" x2="${width - padding}" y2="${padding + (i / 4) * (height - padding * 2)}" stroke="#232a32" stroke-dasharray="3 3"></line>`).join('');
-        const topValue = 2000;
-        const step = 400;
-        const yLabels = Array.from({ length: Math.floor(topValue / step) + 1 }, (_, i) => {
-          const value = i * step;
-          const y = padding + (1 - value / topValue) * (height - padding * 2);
-          return `<text x="${padding - 10}" y="${y + 4}" text-anchor="end" fill="#8A94A0" font-size="11">${value}</text>`;
-        }).join('');
-        const xLabels = weeklyTrend.map((d, i) => `<text x="${toX(i)}" y="${height - 10}" text-anchor="middle" fill="#8A94A0" font-size="12">${d.day}</text>`).join('');
-        const pointsMarkup = weeklyTrend.map((d, i) => {
-          const x = toX(i);
-          const y = toY(d.kwh);
-          return `
-            <g class="trend-point" data-day="${d.day}" data-kwh="${d.kwh}" data-predicted="${d.predicted}" style="cursor:pointer;">
-              <circle cx="${x}" cy="${y}" r="4.6" fill="${COLORS.amber}" stroke="${COLORS.panel}" stroke-width="2"></circle>
-            </g>
-          `;
-        }).join('');
-        const chartHtml = `
-          <div class="trend-tip" id="trendTip" style="display:none;"></div>
-          <svg viewBox="0 0 ${width} ${height}" width="100%" height="260">
-            <rect x="0" y="0" width="${width}" height="${height}" fill="transparent"></rect>
-            ${gridLines}
-            ${yLabels}
-            <polyline fill="none" stroke="${COLORS.amber}" stroke-width="3" points="${actualPoints}"></polyline>
-            <polyline fill="none" stroke="${COLORS.teal}" stroke-width="2" stroke-dasharray="5 5" points="${predictedPoints}"></polyline>
-            ${pointsMarkup}
-            ${xLabels}
-          </svg>
-        `;
-        chartTargets.forEach((container) => {
-          container.innerHTML = chartHtml;
-          const tip = container.querySelector('.trend-tip');
-          container.querySelectorAll('.trend-point').forEach((point) => {
-            point.addEventListener('mouseenter', (event) => {
-              const { day, kwh, predicted } = point.dataset;
-              tip.innerHTML = `<strong>${day}</strong><br/>Actual: ${kwh} kWh<br/>Predicted: ${predicted} kWh`;
-              tip.style.display = 'block';
-              const rect = container.getBoundingClientRect();
-              tip.style.left = `${event.clientX - rect.left}px`;
-              tip.style.top = `${event.clientY - rect.top}px`;
-            });
-            point.addEventListener('mousemove', (event) => {
-              const rect = container.getBoundingClientRect();
-              tip.style.left = `${event.clientX - rect.left}px`;
-              tip.style.top = `${event.clientY - rect.top}px`;
-            });
-            point.addEventListener('mouseleave', () => {
-              tip.style.display = 'none';
-            });
-          });
-        });
-      }
-      function renderStats() {
-        const root = document.getElementById('statsGrid');
-        const stats = [
-          { icon: '✅', label: 'Healthy Machines', value: healthy, color: COLORS.green },
-          { icon: '⚠', label: 'Under Warning', value: warning, color: COLORS.yellow },
-          { icon: '⛔', label: 'Critical', value: critical, color: COLORS.red },
-          { icon: '⚙', label: 'Avg. Efficiency', value: '78%', color: COLORS.teal },
-          { icon: '⚡', label: 'Power Factor', value: '0.91', color: '#7C8CF8' },
-          { icon: '🌿', label: 'Carbon Emission', value: '4.2t', color: COLORS.amber }
-        ];
-        root.innerHTML = stats.map((s) => `
-          <div class="stat" data-title="${s.label}" data-detail="${s.label} highlights the current health of your energy operations.">
-            <div class="icon-badge" style="background:${s.color}20;color:${s.color}">${s.icon}</div>
-            <div class="value">${s.value}</div>
-            <div style="color:var(--sub);font-size:12px;">${s.label}</div>
-          </div>
-        `).join('');
-      }
-      function renderMachines() {
-        const body = document.getElementById('machineTableBody');
-        const count = document.getElementById('machineCount');
-        const query = document.getElementById('searchInput').value.toLowerCase();
-        const filtered = machines.filter((m) => !query || m.name.toLowerCase().includes(query) || m.id.toLowerCase().includes(query));
-        count.textContent = `${filtered.length} machines`;
-        body.innerHTML = filtered.map((m) => {
-          const meta = statusMeta[m.status];
-          return `
-            <tr data-id="${m.id}">
-              <td>
-                <div style="font-weight:700">${m.name}</div>
-                <div style="font-size:12px;color:var(--sub)">${m.id} · ${m.dept}</div>
-              </td>
-              <td><span class="status-badge" style="background:${meta.color}18;color:${meta.color}">${m.status === 'healthy' ? '✔' : m.status === 'warning' ? '⚠' : '⛔'} ${meta.label}</span></td>
-              <td>${m.power} kW</td>
-              <td>${m.efficiency}%</td>
-              <td>
-                <div style="display:flex;align-items:center;gap:8px;">
-                  <div class="health-bar"><div style="width:${m.health}%;background:${meta.color}"></div></div>
-                  <span>${m.health}</span>
-                </div>
-              </td>
-              <td>${m.hours.toLocaleString()}h</td>
-              <td>${m.lastMaint}</td>
-            </tr>
-          `;
-        }).join('');
-        body.querySelectorAll('tr').forEach((row) => row.addEventListener('click', () => openPanel(filtered.find((m) => m.id === row.dataset.id))));
-      }
-      function renderRecommendations() {
-        document.getElementById('recommendations').innerHTML = recommendations.map((r) => {
-          const color = r.priority === 'High' ? COLORS.red : r.priority === 'Medium' ? COLORS.yellow : COLORS.teal;
-          return `
-            <div class="card recommendation" data-title="${r.title}" data-detail="${r.reason} This recommendation is ready for your next action.">
-              <div>
-                <div class="status-badge" style="background:${color}18;color:${color}">${r.priority} priority</div>
-                <div class="title">${r.title}</div>
-                <div class="eyebrow">Estimated savings</div>
-                <div class="savings">${r.savings}</div>
-                <p>${r.reason}</p>
-              </div>
-              <button class="reco-btn">${r.action} ↗</button>
-            </div>
-          `;
-        }).join('');
-      }
-      function renderAlerts() {
-        document.getElementById('alerts').innerHTML = alerts.map((a) => {
-          const color = a.priority === 'critical' ? COLORS.red : a.priority === 'warning' ? COLORS.yellow : COLORS.teal;
-          return `
-            <div class="alert-item" data-title="${a.type}" data-detail="${a.machine} · ${a.action}">
-              <div class="top">
-                <span class="type" style="color:${color}">${a.type}</span>
-                <span class="time">${a.time}</span>
-              </div>
-              <div style="margin-top:6px;font-size:12px;color:var(--sub)">${a.machine}</div>
-              <div style="margin-top:8px;display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px;">
-                <span>${a.action}</span>
-                <span class="status-badge" style="background:${COLORS.border};color:${COLORS.sub}">${a.status}</span>
-              </div>
-            </div>
-          `;
-        }).join('');
-      }
-      function renderBarChart() {
-        const container = document.getElementById('barChart');
-        const max = Math.max(...topFive.map((d) => d.efficiency));
-        container.innerHTML = `
-          <svg viewBox="0 0 320 220" style="margin-top:8px">
-            ${topFive.map((d, i) => {
-              const h = (d.efficiency / max) * 150;
-              const y = 190 - h;
-              const x = 20 + i * 58;
-              return `<g><rect x="${x}" y="${y}" width="34" height="${h}" rx="6" fill="${COLORS.teal}"></rect><text x="${x + 17}" y="205" text-anchor="middle" fill="#8A94A0" font-size="10">${d.name}</text></g>`;
-            }).join('')}
-          </svg>
-        `;
-      }
-      function renderPieChart() {
-        const container = document.getElementById('pieChart');
-        const total = deptUsage.reduce((sum, d) => sum + d.value, 0);
-        let start = 0;
-        const segments = deptUsage.map((d, i) => {
-          const slice = (d.value / total) * 360;
-          const color = ['#F0A83C', '#2FD1C5', '#3FC77E', '#F0B429', '#7C8CF8'][i % 5];
-          const end = start + slice;
-          const result = `${color} ${start}deg ${end}deg`;
-          start = end;
-          return result;
-        });
-        container.innerHTML = `
-          <div class="donut"></div>
-          <div class="legend" style="justify-content:center">
-            ${deptUsage.map((d, i) => `<span><i style="background:${['#F0A83C', '#2FD1C5', '#3FC77E', '#F0B429', '#7C8CF8'][i % 5]}"></i>${d.name}</span>`).join('')}
-          </div>
-        `;
-        container.querySelector('.donut').style.background = `conic-gradient(${segments.join(', ')})`;
-      }
-      function renderLiveEnergyPage() {
-        document.getElementById('mainMeterVoltage').textContent = `Voltage ${liveMainMeter.voltage}`;
-        document.getElementById('mainMeterCurrent').textContent = `Current ${liveMainMeter.current}`;
-        document.getElementById('mainMeterPower').textContent = `Power ${liveMainMeter.power}`;
-        document.getElementById('mainMeterPF').textContent = `Power Factor ${liveMainMeter.pf}`;
-        document.getElementById('mainMeterFreq').textContent = `Frequency ${liveMainMeter.frequency}`;
-        document.getElementById('mainMeterKwh').textContent = `Today's kWh ${liveMainMeter.todayKwh}`;
-        document.getElementById('mainMeterPeak').textContent = `Peak Demand ${liveMainMeter.peakDemand}`;
-        document.getElementById('liveMachineCards').innerHTML = liveMachines.map((machine) => `
-          <div class="card" style="padding:14px;border-radius:16px;border:1px solid var(--border);background:var(--panel-2);">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
-              <div>
-                <div class="eyebrow">${machine.id}</div>
-                <div style="font-weight:700;margin-top:8px;">${machine.name}</div>
-              </div>
-              <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:${machine.status.color}18;color:${machine.status.color};font-weight:700;">${machine.status.label}</div>
-            </div>
-            <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px;font-size:14px;color:var(--text);">
-              <div>Voltage<br><strong>${machine.voltage}</strong></div>
-              <div>Current<br><strong>${machine.current}</strong></div>
-              <div>Power<br><strong>${machine.power}</strong></div>
-              <div>Temperature<br><strong>${machine.temperature}</strong></div>
-              <div>Running<br><strong>${machine.running}</strong></div>
-              <div>Stopped<br><strong>${machine.stopped}</strong></div>
-            </div>
-          </div>
-        `).join('');
-      }
-      function renderMachineProfiles() {
-        document.getElementById('machineProfiles').innerHTML = machineProfiles.map((m, index) => `
-          <div class="card" style="padding:18px;border-radius:20px;">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px;">
-              <div>
-                <div class="eyebrow">Machine ${m.id}</div>
-                <div style="font-size:18px;font-weight:700;margin-top:6px;">${m.name}</div>
-              </div>
-              <div style="font-weight:700;color:${COLORS.teal};">Health ${m.healthScore}★</div>
-            </div>
-            <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:18px;">
-              <div class="meta-box"><div class="label">Current</div><div class="value">${m.current}</div></div>
-              <div class="meta-box"><div class="label">Power</div><div class="value">${m.power}</div></div>
-              <div class="meta-box"><div class="label">Today's Energy</div><div class="value">${m.energy}</div></div>
-              <div class="meta-box"><div class="label">Efficiency</div><div class="value">${m.efficiency}</div></div>
-              <div class="meta-box"><div class="label">Running Time</div><div class="value">${m.runningTime}</div></div>
-            </div>
-            <div style="margin-top:16px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;">
-              <div style="padding:12px;background:rgba(47,209,197,0.08);border-radius:14px;"><div class="eyebrow">Power History</div><div style="margin-top:8px;font-size:13px;color:var(--sub);">${m.powerHistory.join(' / ')} kW</div></div>
-              <div style="padding:12px;background:rgba(240,168,60,0.08);border-radius:14px;"><div class="eyebrow">Energy Trend</div><div style="margin-top:8px;font-size:13px;color:var(--sub);">${m.energyTrend.join(' / ')} kWh</div></div>
-              <div style="padding:12px;background:rgba(239,83,80,0.08);border-radius:14px;"><div class="eyebrow">Temperature Trend</div><div style="margin-top:8px;font-size:13px;color:var(--sub);">${m.tempTrend.join(' / ')} °C</div></div>
-            </div>
-            <div style="margin-top:16px;color:var(--sub);font-size:13px;line-height:1.6;">${m.healthNote}</div>
-          </div>
-        `).join('');
-      }
-      function renderAIInsights() {
-        document.getElementById('aiWaste').innerHTML = `
-          <div style="font-size:16px;font-weight:700;">${aiInsights.waste.machine}</div>
-          <div style="margin-top:10px;">${aiInsights.waste.summary}</div>
-          <div style="margin-top:12px;font-weight:700;color:${COLORS.red};">Estimated loss ${aiInsights.waste.loss}</div>
-        `;
-        document.getElementById('aiBill').innerHTML = `
-          <div style="font-size:16px;font-weight:700;">Predicted Bill</div>
-          <div style="margin-top:10px;font-size:24px;font-weight:700;">${aiInsights.bill.predicted}</div>
-          <div style="margin-top:10px;color:var(--sub);">Confidence ${aiInsights.bill.confidence}</div>
-        `;
-        document.getElementById('aiPeakDemand').innerHTML = `
-          <div style="font-size:16px;font-weight:700;">${aiInsights.peakDemand.when}</div>
-          <div style="margin-top:10px;">Peak expected ${aiInsights.peakDemand.time}</div>
-          <div style="margin-top:10px;font-weight:700;">Expected Load ${aiInsights.peakDemand.expected}</div>
-        `;
-        document.getElementById('aiEfficiencyTable').innerHTML = `
-          <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;">
-            ${aiInsights.efficiencyList.map((item) => `<div class="meta-box"><div class="label">Machine ${item.machine}</div><div class="value">${item.value}</div></div>`).join('')}
-          </div>
-        `;
-        document.getElementById('aiRecommendations').innerHTML = aiInsights.recommendations.map((item) => `
-          <div style="margin-bottom:12px;padding:14px;border-radius:16px;border:1px solid var(--border);background:var(--panel-2);">
-            <div style="font-weight:700;">✓ ${item.text}</div>
-            <div style="margin-top:8px;color:var(--green);">Save ${item.savings}</div>
-          </div>
-        `).join('');
-      }
-      function renderTimeline() {
-        document.getElementById('timeline').innerHTML = timeline.map((item, i) => `
-          <div class="timeline-item" data-title="${item.text}" data-detail="${item.time} · ${item.text}">
-            <div class="line-dot"></div>
-            <div>
-              <div class="time">${item.time}</div>
-              <div>${item.text}</div>
-            </div>
-          </div>
-        `).join('');
-      }
       function updateClock() {
         const now = new Date();
         document.getElementById('clockLabel').textContent = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
@@ -1219,76 +1880,33 @@
       }
       function setActiveView(page) {
         document.querySelectorAll('.nav button').forEach((btn) => btn.classList.toggle('active', btn.dataset.page === page));
-        document.querySelectorAll('.page-view').forEach((view) => {
-          view.classList.toggle('active', view.id === `view-${page}`);
-        });
-      }
-      function createReportDownloadLink(report) {
-        const content = `Report: ${report.name}\nDate: ${report.date}\nSize: ${report.size}\n\nThis is a placeholder report generated by EnergyOS.`;
-        const href = `data:text/plain;charset=utf-8,${encodeURIComponent(content)}`;
-        const fileName = report.name.toLowerCase().replace(/[^a-z0-9]+/g, '_') + '.txt';
-        return `<a class="btn-lite" style="padding:6px 10px;font-size:12px;white-space:nowrap;" href="${href}" download="${fileName}">Download</a>`;
-      }
-      function renderSecondaryViews() {
-        document.getElementById('machinesHealthyValue').textContent = healthy;
-        document.getElementById('machinesCriticalValue').textContent = critical;
-        const aiInsightsContainer = document.getElementById('aiInsightsCards');
-        if (aiInsightsContainer) {
-          aiInsightsContainer.innerHTML = recommendations.map((r) => `
-            <div class="card recommendation">
-              <div>
-                <div class="title">${r.title}</div>
-                <div class="eyebrow">Estimated savings</div>
-                <div class="savings">${r.savings}</div>
-                <p>${r.reason}</p>
-              </div>
-            </div>
-          `).join('');
-        }
-        document.getElementById('reportsList').innerHTML = [
-          { name: 'Weekly Energy Summary', date: '07 Jul 2026', size: '1.2 MB' },
-          { name: 'Machine Health Audit', date: '05 Jul 2026', size: '860 KB' },
-          { name: 'Electricity Cost Breakdown', date: '01 Jul 2026', size: '540 KB' }
-        ].map((report) => `
-          <div class="alert-item" style="display:flex;flex-direction:column;gap:10px;">
-            <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;">
-              <strong>${report.name}</strong>
-              <span class="status-badge" style="background:${COLORS.border};color:${COLORS.sub}">${report.size}</span>
-            </div>
-            <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
-              <div style="margin-top:6px;color:var(--sub);font-size:12px;">${report.date}</div>
-              ${createReportDownloadLink(report)}
-            </div>
-          </div>
-        `).join('');
-        document.getElementById('alertsView').innerHTML = alerts.map((a) => `
-          <div class="alert-item">
-            <div class="top"><span class="type" style="color:${a.priority === 'critical' ? COLORS.red : a.priority === 'warning' ? COLORS.yellow : COLORS.teal}">${a.type}</span><span class="time">${a.time}</span></div>
-            <div style="margin-top:6px;font-size:12px;color:var(--sub)">${a.machine}</div>
-          </div>
-        `).join('');
+        document.querySelectorAll('.page-view').forEach((view) => view.classList.toggle('active', view.id === `view-${page}`));
+        if (page === 'Alerts') { simulation.notifications = 0; renderNotifBadge(); simulation.alerts.forEach((a) => { a.fresh = false; }); }
       }
       function drawPulseRail() {
         const path = document.getElementById('pulsePath');
-        const points = Array.from({ length: 60 }, (_, i) => 50 + Math.sin(i * 0.5) * 14 + (i % 7 === 0 ? 22 : 0) + rnd() * 6);
-        const d = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${(i / (points.length - 1)) * 100} ${100 - p}`).join(' ');
+        if (!path) return;
+        const points = simulation.powerHistory.slice(-40);
+        const max = Math.max(...points) + 10; const min = Math.max(Math.min(...points) - 10, 0);
+        const d = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${(i / (points.length - 1)) * 100} ${100 - ((p - min) / (max - min || 1)) * 100}`).join(' ');
         path.setAttribute('d', d);
       }
       function openPanel(machine) {
         if (!machine) return;
         document.getElementById('panelDept').textContent = `${machine.id} · ${machine.dept}`;
         document.getElementById('panelName').textContent = machine.name;
-        const meta = statusMeta[machine.status];
-        document.getElementById('panelStatus').innerHTML = `<span class="status-badge" style="background:${meta.color}18;color:${meta.color}">${machine.status === 'healthy' ? '✔' : machine.status === 'warning' ? '⚠' : '⛔'} ${meta.label}</span>`;
-        document.getElementById('panelPower').textContent = `${machine.power} kW`;
+        const derivedStatus = machine.runStatus === 'warning' ? 'warning' : (machine.health < 70 ? 'critical' : machine.health < 85 ? 'warning' : 'healthy');
+        const meta = statusMeta[derivedStatus];
+        document.getElementById('panelStatus').innerHTML = `<span class="status-badge" style="background:${meta.color}18;color:${meta.color}">${derivedStatus === 'healthy' ? '✔' : derivedStatus === 'warning' ? '⚠' : '⛔'} ${meta.label}</span> <span class="ai-demo-chip" style="margin-left:6px;">Live simulated telemetry</span>`;
+        document.getElementById('panelPower').textContent = `${machine.power.toFixed(1)} kW`;
         document.getElementById('panelEfficiency').textContent = `${machine.efficiency}%`;
-        document.getElementById('panelHours').textContent = `${machine.hours.toLocaleString()}h`;
-        document.getElementById('panelMaintenance').textContent = machine.lastMaint;
-        document.getElementById('panelHealthText').textContent = `${machine.health}/100`;
+        document.getElementById('panelHours').textContent = `${Math.round(machine.runningHours).toLocaleString()}h`;
+        document.getElementById('panelMaintenance').textContent = machine.lastMaintenance;
+        document.getElementById('panelHealthText').textContent = `${Math.round(machine.health)}/100`;
         const bar = document.getElementById('panelHealthBar');
-        bar.style.width = `${machine.health}%`;
+        bar.style.width = `${Math.round(machine.health)}%`;
         bar.style.background = meta.color;
-        document.getElementById('panelInsight').innerHTML = machine.status === 'critical' ? 'This machine shows signs of imminent failure risk. Schedule an inspection within 48 hours to avoid unplanned downtime.' : machine.status === 'warning' ? 'Efficiency has drifted below baseline. A routine check could recover 4–6% output.' : 'Operating within optimal parameters. No action needed.';
+        document.getElementById('panelInsight').innerHTML = derivedStatus === 'critical' ? 'This machine shows signs of imminent failure risk. Schedule an inspection within 48 hours to avoid unplanned downtime.' : (machine.anomaly && machine.runStatus === 'warning') ? 'Simulated AI Insight: Power draw has drifted above baseline — inspect motor/bearing condition.' : derivedStatus === 'warning' ? 'Efficiency has drifted below baseline. A routine check could recover 4–6% output.' : 'Operating within optimal parameters. No action needed.';
         document.getElementById('sidePanel').classList.add('open');
         document.getElementById('backdrop').classList.add('show');
       }
@@ -1296,6 +1914,76 @@
         document.getElementById('sidePanel').classList.remove('open');
         document.getElementById('backdrop').classList.remove('show');
       }
+
+      // ---- Ask EnergyOS modal ----
+      const ASK_QA = [
+        { q: 'Which machine is wasting the most energy?', a: () => { const m07 = simulation.machines.find((m) => m.id === 'M-07'); return `Machine M-07 currently shows the largest deviation from its normal power baseline${m07.runStatus === 'warning' ? `, drawing ${m07.power.toFixed(1)} kW against a baseline of ${m07.baseline.toFixed(1)} kW` : ''}. Inspecting its motor/bearing condition is recommended.`; } },
+        { q: "Why is today's consumption high?", a: () => `Today's load is running around ${simulation.factory.power.toFixed(0)} kW, driven mainly by Injection Molders and Air Compressors operating through the peak tariff window.` },
+        { q: 'What can I do to reduce electricity cost?', a: () => 'Shifting heavy batch operations for Machine 04 and Machine 05 outside the peak tariff window could reduce avoidable cost by roughly ₹4,800/month, alongside improving power factor.' },
+        { q: 'Which machine needs maintenance?', a: () => 'Air Compressor E1 is drawing more power than expected for its current load — a filter and pressure-leakage inspection is recommended during the next maintenance window.' }
+      ];
+      function openAskModal() {
+        document.getElementById('askModalBackdrop').classList.add('open');
+        document.getElementById('askModal').classList.add('open');
+        document.getElementById('askResponse').style.display = 'none';
+        document.getElementById('askQuestions').innerHTML = ASK_QA.map((qa, i) => `<button class="ask-q-btn" data-i="${i}">${qa.q}</button>`).join('');
+        document.querySelectorAll('.ask-q-btn').forEach((btn) => btn.addEventListener('click', () => {
+          const resp = document.getElementById('askResponse');
+          resp.style.display = 'block';
+          resp.textContent = ASK_QA[+btn.dataset.i].a();
+        }));
+      }
+      function closeAskModal() {
+        document.getElementById('askModalBackdrop').classList.remove('open');
+        document.getElementById('askModal').classList.remove('open');
+      }
+
+      // ---- Demo controls ----
+      function updateDemoControlsUI() {
+        const btn = document.getElementById('dcPlayPause');
+        if (btn) btn.textContent = simulation.running ? '⏸ Pause' : '▶ Start';
+        const mins = Math.floor(simulation.elapsedSeconds / 60);
+        const secs = Math.floor(simulation.elapsedSeconds % 60);
+        const elapsedEl = document.getElementById('dcElapsed');
+        if (elapsedEl) elapsedEl.textContent = `${mins}:${String(secs).padStart(2, '0')}`;
+        document.getElementById('dcSpeed1')?.classList.toggle('active-speed', simulation.speed === 1);
+        document.getElementById('dcSpeed2')?.classList.toggle('active-speed', simulation.speed === 2);
+      }
+      function resetDemo() {
+        simulation.elapsedSeconds = 0;
+        simulation.running = true;
+        simulation.speed = 1;
+        simulation.factory.voltage = 415.0;
+        simulation.factory.frequency = 50.0;
+        simulation.factory.pf = 0.95;
+        simulation.factory.energyKwh = 1280.0;
+        simulation.factory.peakDemand = 182;
+        simulation.factory.cost = 11500;
+        simulation.factory.monthlyBill = 268000;
+        simulation.factory.savingsToday = 2450;
+        simulation.factory.auxLoad = AUX_LOAD_BASE;
+        simulation.machines = buildInitialMachines();
+        simulation.machineSeries = {};
+        simulation.machines.forEach((m) => { simulation.machineSeries[m.id] = Array.from({ length: 60 }, () => m.power); });
+        simulation.powerHistory = Array.from({ length: 60 }, () => 182);
+        simulation.ai.healthScore = 87;
+        simulation.ai.status = 'Running Efficiently';
+        simulation.carbon = { emitted: 2.1, saved: 0.7, trees: 35 };
+        simulation.notifications = 0;
+        simulation.popups = { alert1: false, reco2: false, insight3: false };
+        simulation.alerts = simulation.alerts.slice(-4);
+        simulation.alerts.forEach((a) => { a.fresh = false; });
+        simulation.timeline = [{ time: nowLabel(), text: 'Simulation reset' }, { time: nowLabel(), text: 'Gateway synchronized' }];
+        simulation.recommendations = simulation.recommendations.slice(-4);
+        document.getElementById('toastStack').innerHTML = '';
+        renderNotifBadge();
+        updateDemoControlsUI();
+        renderLive();
+      }
+
+      // ======================================================================
+      // BOOTSTRAP
+      // ======================================================================
       document.getElementById('collapseBtn').addEventListener('click', () => document.getElementById('sidebar').classList.toggle('collapsed'));
       const sidebar = document.getElementById('sidebar');
       const sidebarBackdrop = document.getElementById('sidebarBackdrop');
@@ -1319,7 +2007,13 @@
           sidebarBackdrop.classList.remove('show');
         });
       }
-      document.getElementById('searchInput').addEventListener('input', renderMachines);
+      document.getElementById('searchInput').addEventListener('input', () => {
+        renderMachineTableLive();
+        const q = document.getElementById('searchInput').value.toLowerCase();
+        if (!q) return;
+        const matchedMachine = simulation.machines.find((m) => m.id.toLowerCase() === q || m.name.toLowerCase().includes(q));
+        if (matchedMachine) setActiveView('Machines');
+      });
       document.getElementById('closePanel').addEventListener('click', closePanel);
       document.getElementById('backdrop').addEventListener('click', closePanel);
       document.getElementById('closeFeatureScreen').addEventListener('click', hideFeatureScreen);
@@ -1327,25 +2021,29 @@
       document.getElementById('featureSecondaryBtn').addEventListener('click', hideFeatureScreen);
       document.getElementById('featurePrimaryBtn').addEventListener('click', () => showFeatureScreen('Workspace ready', 'Everything is prepared for the next step in EnergyOS.', 'Ready to proceed', 'You can continue with the next action from here.', 'Continue'));
       const askBtn = document.getElementById('askEnergyBtn');
-      if (askBtn) {
-        askBtn.addEventListener('click', () => showFeatureScreen(
-          'Ask EnergyOS',
-          'EnergyOS is ready to answer your plant questions and propose actions based on current factory performance.',
-          'AI Assistant',
-          'Type your question or choose a recommendation.',
-          'Start chat'
-        ));
-      }
+      if (askBtn) askBtn.addEventListener('click', openAskModal);
+      document.getElementById('askModalClose').addEventListener('click', closeAskModal);
+      document.getElementById('askModalBackdrop').addEventListener('click', closeAskModal);
       const notificationBtn = document.getElementById('notificationBtn');
-      if (notificationBtn) {
-        notificationBtn.addEventListener('click', () => setActiveView('Alerts'));
-      }
+      if (notificationBtn) notificationBtn.addEventListener('click', () => setActiveView('Alerts'));
+
+      // Demo controls wiring
+      const demoControlsBtn = document.getElementById('demoControlsBtn');
+      const demoControlsPanel = document.getElementById('demoControlsPanel');
+      demoControlsBtn.addEventListener('click', () => demoControlsPanel.classList.toggle('open'));
+      document.getElementById('dcPlayPause').addEventListener('click', () => { simulation.running = !simulation.running; updateDemoControlsUI(); });
+      document.getElementById('dcReset').addEventListener('click', resetDemo);
+      document.getElementById('dcSpeed1').addEventListener('click', () => { simulation.speed = 1; updateDemoControlsUI(); });
+      document.getElementById('dcSpeed2').addEventListener('click', () => { simulation.speed = 2; updateDemoControlsUI(); });
+      const settingsReset = document.getElementById('settingsResetDemo');
+      if (settingsReset) settingsReset.addEventListener('click', resetDemo);
+
       document.addEventListener('click', (event) => {
         const row = event.target.closest('tbody tr');
         if (row) {
-          const machine = machines.find((m) => m.id === row.dataset.id);
+          const machine = simulation.machines.find((m) => m.id === row.dataset.id);
           openPanel(machine);
-          showFeatureScreen(machine.name, `${machine.id} is currently ${machine.status}. Its health score is ${machine.health} and it is drawing ${machine.power} kW.`, 'Machine detail', `Suggested next step: ${machine.status === 'critical' ? 'Schedule maintenance now.' : 'Review performance during the next shift.'}`, 'Inspect machine');
+          showFeatureScreen(machine.name, `${machine.id} is currently ${machine.runStatus}. Its health score is ${Math.round(machine.health)} and it is drawing ${machine.power.toFixed(1)} kW.`, 'Machine detail', `Suggested next step: ${machine.runStatus === 'warning' ? 'Schedule maintenance now.' : 'Review performance during the next shift.'}`, 'Inspect machine');
           return;
         }
         const interactive = event.target.closest('.interactive');
@@ -1354,23 +2052,28 @@
         const detail = interactive.dataset.detail || 'This area is interactive.';
         showFeatureScreen(title, detail, 'Interactive view', 'Open this section to review more operational insight.', 'Open view');
       });
+
+      // Initial render
       setupInteractiveElements();
-      renderKpis();
+      buildKpiSkeleton();
       renderTrendChart();
-      renderStats();
-      renderSecondaryViews();
-      renderMachines();
-      renderRecommendations();
-      renderAlerts();
+      renderReports();
       renderBarChart();
       renderPieChart();
-      renderTimeline();
-      renderLiveEnergyPage();
-      renderMachineProfiles();
-      renderAIInsights();
+      renderMachineToggles();
+      renderLive();
       updateClock();
       drawPulseRail();
+      updateDemoControlsUI();
       setInterval(updateClock, 30000);
+
+      // Central simulation tick — single source of truth, ~1 second cadence
+      setInterval(() => {
+        if (!simulation.running) { updateDemoControlsUI(); return; }
+        updateSimulation(simulation.speed);
+        drawPulseRail();
+        updateDemoControlsUI();
+      }, 1000);
     </script>
   </body>
 </html>
