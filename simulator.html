@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EnergyOS AI — Industrial Energy Monitoring Simulator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================= TOKENS ============================= */
+:root{
+  --bg:#f2f5f9;
+  --surface:#ffffff;
+  --surface-alt:#f8fafc;
+  --navy:#0b1f33;
+  --navy-soft:#5b6b7d;
+  --navy-faint:#8a97a6;
+  --border:#e1e8f0;
+  --blue:#2563eb;
+  --blue-soft:#dbe6fd;
+  --cyan:#0ea5e9;
+  --green:#0fa66b;
+  --green-soft:#dcf6ea;
+  --amber:#e08a1c;
+  --amber-soft:#fdedd3;
+  --red:#dc4646;
+  --red-soft:#fbe2e2;
+  --gray:#9aa6b2;
+  --shadow-sm:0 1px 2px rgba(11,31,51,.06);
+  --shadow-md:0 6px 18px rgba(11,31,51,.08);
+  --shadow-lg:0 18px 40px rgba(11,31,51,.12);
+  --radius:14px;
+  --radius-sm:9px;
+  --font-display:'Space Grotesk', sans-serif;
+  --font-body:'Inter', sans-serif;
+  --font-mono:'IBM Plex Mono', monospace;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:
+    radial-gradient(1200px 500px at 10% -10%, #eaf1fb 0%, transparent 60%),
+    radial-gradient(1000px 500px at 100% 0%, #eafaf3 0%, transparent 55%),
+    var(--bg);
+  color:var(--navy);
+  font-family:var(--font-body);
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:var(--font-display); margin:0; letter-spacing:-.01em;}
+p{margin:0;}
+button{font-family:var(--font-body); cursor:pointer;}
+.mono{font-family:var(--font-mono);}
+.hidden{display:none !important;}
+
+/* ============================= LAYOUT SHELL ============================= */
+.shell{max-width:1400px; margin:0 auto; padding:0 28px 60px;}
+
+/* ============================= HEADER ============================= */
+header.topbar{
+  position:sticky; top:0; z-index:40;
+  background:rgba(247,250,253,.86);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+}
+.topbar-inner{
+  max-width:1400px; margin:0 auto; padding:14px 28px;
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
+}
+.brand{display:flex; align-items:center; gap:12px;}
+.brand-mark{
+  width:40px; height:40px; border-radius:11px;
+  background:linear-gradient(145deg,#123a6b,#0ea5e9);
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:var(--shadow-sm);
+  flex-shrink:0;
+}
+.brand-mark svg{width:22px; height:22px;}
+.brand-text h1{font-size:19px; font-weight:700; color:var(--navy); line-height:1.1;}
+.brand-text span{font-size:11.5px; color:var(--navy-soft); font-weight:500;}
+.topbar-center{display:flex; align-items:center; gap:10px;}
+.pill{
+  font-size:11px; font-weight:600; letter-spacing:.06em; text-transform:uppercase;
+  padding:6px 12px; border-radius:999px; border:1px solid var(--border); color:var(--navy-soft);
+  background:var(--surface);
+}
+.pill.demo{color:#8a4b00; background:var(--amber-soft); border-color:#f3d8a3;}
+.status-chip{
+  display:flex; align-items:center; gap:8px;
+  font-size:12.5px; font-weight:600; color:var(--navy-soft);
+  padding:7px 13px; border-radius:999px; background:var(--surface); border:1px solid var(--border);
+}
+.dot{width:8px; height:8px; border-radius:50%; background:var(--gray); flex-shrink:0;}
+.dot.on{background:var(--green); box-shadow:0 0 0 4px var(--green-soft); animation:pulseDot 1.8s infinite;}
+.dot.off{background:var(--gray);}
+.dot.warn{background:var(--amber); box-shadow:0 0 0 4px var(--amber-soft);}
+@keyframes pulseDot{0%,100%{box-shadow:0 0 0 3px var(--green-soft);} 50%{box-shadow:0 0 0 7px transparent;}}
+
+/* ============================= HERO ============================= */
+.hero{padding:38px 0 18px; text-align:center;}
+.hero .eyebrow{
+  font-size:11.5px; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--blue); margin-bottom:10px; display:block;
+}
+.hero h2{font-size:clamp(26px,3.4vw,38px); color:var(--navy); font-weight:700;}
+.hero p.sub{margin-top:10px; font-size:15.5px; color:var(--navy-soft); max-width:640px; margin-inline:auto;}
+.hero p.note{margin-top:8px; font-size:12.5px; color:var(--navy-faint); max-width:600px; margin-inline:auto;}
+
+/* ============================= CONTROL PANEL ============================= */
+.panel-row{display:flex; gap:16px; margin:22px 0; flex-wrap:wrap;}
+.card{
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+  box-shadow:var(--shadow-sm);
+}
+.control-card{flex:2; min-width:420px; padding:18px 22px; display:flex; align-items:center; justify-content:space-between; gap:18px; flex-wrap:wrap;}
+.control-stats{display:flex; gap:26px; flex-wrap:wrap;}
+.stat{display:flex; flex-direction:column; gap:3px;}
+.stat label{font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--navy-faint); font-weight:600;}
+.stat .val{font-size:14.5px; font-weight:600; color:var(--navy); display:flex; align-items:center; gap:6px;}
+.control-buttons{display:flex; gap:10px;}
+.btn{
+  border:none; border-radius:10px; padding:11px 18px; font-size:13.5px; font-weight:700;
+  display:flex; align-items:center; gap:8px; transition:transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+}
+.btn:active{transform:scale(.97);}
+.btn:disabled{opacity:.4; cursor:not-allowed;}
+.btn-start{background:linear-gradient(145deg,#0fa66b,#0c8a59); color:#fff; box-shadow:0 8px 18px rgba(15,166,107,.28);}
+.btn-start:not(:disabled):hover{box-shadow:0 10px 22px rgba(15,166,107,.38);}
+.btn-stop{background:var(--surface); color:var(--red); border:1.5px solid #f0c6c6;}
+.btn-stop:not(:disabled):hover{background:var(--red-soft);}
+
+.summary-card{flex:1.3; min-width:320px; padding:18px 22px;}
+.summary-card h4{font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--navy-faint); margin-bottom:12px;}
+.summary-grid{display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px;}
+.summary-grid .stat .val{font-size:15px;}
+.summary-grid .val.big{font-family:var(--font-mono); color:var(--blue);}
+
+/* ============================= STAGE LABELS ============================= */
+.stage-strip{
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  margin:6px 0 20px; flex-wrap:wrap; font-size:11.5px; font-weight:600; color:var(--navy-faint);
+  letter-spacing:.04em;
+}
+.stage-strip .stage{
+  padding:6px 12px; border-radius:999px; background:var(--surface-alt); border:1px solid var(--border);
+  transition:all .3s ease;
+}
+.stage-strip .stage.active{background:var(--blue-soft); color:var(--blue); border-color:#bcd4fb;}
+.stage-strip .arrow{color:var(--navy-faint); opacity:.6;}
+
+/* ============================= ARCHITECTURE HEADER ============================= */
+.arch-header{display:flex; align-items:center; justify-content:space-between; margin:26px 0 12px; flex-wrap:wrap; gap:8px;}
+.arch-header .titles h3{font-size:13px; letter-spacing:.1em; text-transform:uppercase; color:var(--navy);}
+.arch-header .titles p{font-size:11.5px; color:var(--navy-faint); margin-top:2px;}
+.arch-scroll-hint{font-size:11px; color:var(--navy-faint); display:flex; align-items:center; gap:6px;}
+
+/* ============================= ARCHITECTURE CANVAS ============================= */
+.arch-wrapper{
+  border:1px solid var(--border); border-radius:18px; background:var(--surface);
+  box-shadow:var(--shadow-md); overflow-x:auto; overflow-y:hidden; padding:30px 26px 10px;
+}
+.arch-canvas{position:relative; min-width:1540px;}
+svg.connector-layer{position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; overflow:visible;}
+.arch-top{
+  display:grid;
+  grid-template-columns: 210px repeat(6, 158px) 250px;
+  column-gap:26px;
+  align-items:stretch;
+  position:relative;
+  z-index:2;
+}
+.chain-col{display:flex; flex-direction:column; gap:10px; align-items:stretch;}
+.chain-connector{
+  width:2px; height:16px; margin:0 auto; background:repeating-linear-gradient(to bottom, var(--border) 0 4px, transparent 4px 8px);
+}
+.chain-connector.flow{background:repeating-linear-gradient(to bottom, var(--cyan) 0 4px, transparent 4px 8px); animation:dashslide .6s linear infinite;}
+@keyframes dashslide{to{background-position:0 -16px;}}
+
+/* node card generic */
+.node{
+  background:var(--surface-alt); border:1px solid var(--border); border-radius:11px;
+  padding:10px 12px; position:relative; transition:all .35s ease; cursor:default;
+}
+.node.clickable{cursor:pointer;}
+.node.clickable:hover{border-color:var(--blue); box-shadow:0 4px 14px rgba(37,99,235,.14); transform:translateY(-1px);}
+.node .n-head{display:flex; align-items:center; justify-content:space-between; gap:6px; margin-bottom:6px;}
+.node .n-title{font-size:12.5px; font-weight:700; color:var(--navy);}
+.node .n-sub{font-size:10px; color:var(--navy-faint); margin-top:-3px;}
+.node .n-status{font-size:9.5px; font-weight:700; letter-spacing:.05em; display:flex; align-items:center; gap:4px; color:var(--gray);}
+.node .n-status .dot{width:6px; height:6px;}
+.node.active{border-color:#bcdcc9; background:linear-gradient(180deg,#ffffff,#f4fbf7);}
+.node.active .n-status{color:var(--green);}
+.node.warn{border-color:#f4d59a; background:linear-gradient(180deg,#fffdf7,#fff7e8); box-shadow:0 0 0 3px var(--amber-soft);}
+.node.warn .n-status{color:var(--amber);}
+.node .n-rows{display:grid; grid-template-columns:1fr 1fr; gap:5px 8px; margin-top:4px;}
+.node .n-row{display:flex; flex-direction:column;}
+.node .n-row label{font-size:8.5px; color:var(--navy-faint); text-transform:uppercase; letter-spacing:.04em;}
+.node .n-row .v{font-family:var(--font-mono); font-size:11.5px; font-weight:600; color:var(--navy);}
+.node.offline .v{color:var(--navy-faint);}
+
+/* smart meter (top of left column) */
+.meter-card{padding:14px;}
+.meter-card .n-title{font-size:13.5px;}
+.meter-card .n-rows{grid-template-columns:1fr 1fr;}
+
+/* small hardware chip (CT / meter module / esp32) */
+.chip{padding:8px 10px;}
+.chip .n-title{font-size:11px;}
+.chip .n-rows{grid-template-columns:1fr;}
+.wifi-wrap{display:flex; flex-direction:column; align-items:center; gap:2px; margin:2px 0;}
+.wifi-wrap svg{width:16px; height:16px; color:var(--gray);}
+.wifi-wrap.active svg{color:var(--cyan);}
+.wifi-wrap span{font-size:8.5px; color:var(--navy-faint); font-weight:600; letter-spacing:.04em;}
+
+/* raspberry pi hub */
+.pi-col{display:flex; align-items:center;}
+.pi-card{
+  padding:20px; border-radius:16px; width:100%;
+  background:linear-gradient(160deg,#0b1f33,#123a6b);
+  color:#fff; box-shadow:var(--shadow-lg); border:none; position:relative; overflow:hidden;
+}
+.pi-card::after{
+  content:""; position:absolute; inset:0;
+  background:radial-gradient(220px 140px at 90% -10%, rgba(14,165,233,.35), transparent 60%);
+  pointer-events:none;
+}
+.pi-card .n-title{color:#fff; font-size:16px;}
+.pi-card .n-sub{color:#9fb3cc;}
+.pi-card .n-status{color:#7fe3b4;}
+.pi-card.offline .n-status{color:#9fb3cc;}
+.pi-card .n-rows{grid-template-columns:1fr 1fr 1fr; margin-top:14px; gap:10px;}
+.pi-card .n-row label{color:#8ea2ba;}
+.pi-card .n-row .v{color:#fff; font-size:13px;}
+.pi-tag{
+  margin-top:12px; font-size:9.5px; letter-spacing:.08em; text-transform:uppercase;
+  color:#7fb8ff; background:rgba(37,99,235,.22); display:inline-block; padding:4px 9px; border-radius:6px;
+}
+
+/* rs485 label row */
+.link-label{
+  text-align:center; font-size:9px; color:var(--navy-faint); font-weight:600; letter-spacing:.04em;
+  margin:1px 0;
+}
+
+/* ============================= ARCH BOTTOM (cloud pipeline) ============================= */
+.arch-bottom{
+  margin-top:34px; padding-top:26px; border-top:1px dashed var(--border);
+  display:flex; align-items:center; gap:0; position:relative; z-index:2; justify-content:space-between;
+}
+.pipe-node{flex:1; min-width:150px;}
+.pipe-arrow{width:44px; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+.pipe-arrow svg{width:22px; height:14px; color:var(--gray); transition:color .3s;}
+.pipe-arrow.flow svg{color:var(--cyan);}
+.pipe-card{padding:14px 14px; text-align:left;}
+.pipe-card .n-title{font-size:12.5px;}
+.pipe-card .n-rows{grid-template-columns:1fr; margin-top:8px; gap:4px;}
+.pipe-card .n-row{flex-direction:row; justify-content:space-between; align-items:baseline;}
+.pipe-card .n-row label{font-size:9px;}
+.pipe-card .n-row .v{font-size:11px;}
+.ai-cycle{font-size:10.5px; color:var(--blue); font-weight:600; margin-top:6px; min-height:14px;}
+.dash-btn{
+  margin-top:9px; width:100%; padding:7px; border-radius:8px; border:1px solid var(--border);
+  background:var(--surface); font-size:10.5px; font-weight:700; color:var(--navy-soft);
+  display:flex; align-items:center; justify-content:center; gap:6px;
+}
+.dash-btn:hover{border-color:var(--blue); color:var(--blue);}
+
+/* banner note */
+.honesty-note{
+  margin-top:16px; text-align:center; font-size:11px; color:var(--navy-faint);
+  padding:10px; border-top:1px solid var(--border);
+}
+
+/* ============================= PACKET ============================= */
+.packet{
+  position:absolute; top:0; left:0; z-index:5; pointer-events:none;
+  font-family:var(--font-mono); font-size:9.5px; font-weight:600; color:#fff;
+  background:linear-gradient(145deg,#0ea5e9,#2563eb); padding:3px 8px; border-radius:999px;
+  box-shadow:0 3px 10px rgba(14,165,233,.5); white-space:nowrap;
+  display:flex; align-items:center; gap:4px;
+}
+.packet::before{content:"⚡"; font-size:9px;}
+.packet.main{background:linear-gradient(145deg,#0fa66b,#0c8a59); box-shadow:0 3px 10px rgba(15,166,107,.5);}
+
+/* ============================= TOOLTIP ============================= */
+[data-tip]{position:relative;}
+[data-tip]::after{
+  content:attr(data-tip); position:absolute; bottom:calc(100% + 8px); left:50%; transform:translateX(-50%) translateY(4px);
+  width:200px; background:var(--navy); color:#eef3f9; font-size:11px; line-height:1.4; font-weight:500;
+  padding:9px 11px; border-radius:8px; opacity:0; visibility:hidden; transition:all .15s ease; z-index:60;
+  box-shadow:var(--shadow-md); pointer-events:none;
+}
+[data-tip]::before{
+  content:""; position:absolute; bottom:calc(100% + 3px); left:50%; transform:translateX(-50%);
+  border:5px solid transparent; border-top-color:var(--navy); opacity:0; visibility:hidden; transition:all .15s ease; z-index:60;
+}
+[data-tip]:hover::after, [data-tip]:hover::before{opacity:1; visibility:visible; transform:translateX(-50%) translateY(0);}
+
+/* ============================= LOWER GRID: LOG + INFO ============================= */
+.lower-grid{display:grid; grid-template-columns:1.5fr 1fr; gap:18px; margin-top:26px;}
+.log-card{padding:16px 18px; max-height:280px; display:flex; flex-direction:column;}
+.log-card h4{font-size:12px; text-transform:uppercase; letter-spacing:.07em; color:var(--navy-faint); margin-bottom:10px; display:flex; align-items:center; gap:8px;}
+.log-list{overflow-y:auto; display:flex; flex-direction:column-reverse; gap:0; font-family:var(--font-mono); font-size:12px;}
+.log-list .entry{display:flex; gap:10px; padding:6px 2px; border-bottom:1px solid var(--surface-alt); animation:fadeIn .35s ease;}
+.log-list .entry .time{color:var(--navy-faint); flex-shrink:0;}
+.log-list .entry .msg{color:var(--navy-soft);}
+.log-list .entry .msg.ok{color:var(--green);}
+@keyframes fadeIn{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:translateY(0);}}
+
+.legend-card{padding:16px 18px;}
+.legend-card h4{font-size:12px; text-transform:uppercase; letter-spacing:.07em; color:var(--navy-faint); margin-bottom:12px;}
+.legend-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+.legend-item{display:flex; gap:9px; align-items:flex-start; font-size:11.5px;}
+.legend-item .swatch{width:9px; height:9px; border-radius:3px; margin-top:4px; flex-shrink:0;}
+.legend-item .lbl{color:var(--navy-soft); line-height:1.4;}
+.legend-item .lbl b{color:var(--navy);}
+
+footer.foot{text-align:center; padding:26px 0 6px; font-size:11.5px; color:var(--navy-faint);}
+
+/* ============================= MODAL ============================= */
+.modal-overlay{
+  position:fixed; inset:0; background:rgba(11,31,51,.55); backdrop-filter:blur(3px);
+  display:flex; align-items:center; justify-content:center; z-index:100; opacity:0; pointer-events:none; transition:opacity .18s ease;
+}
+.modal-overlay.show{opacity:1; pointer-events:auto;}
+.modal-box{
+  background:var(--surface); border-radius:16px; width:340px; max-width:90vw; box-shadow:var(--shadow-lg);
+  transform:translateY(10px) scale(.97); transition:transform .18s ease; overflow:hidden;
+}
+.modal-overlay.show .modal-box{transform:translateY(0) scale(1);}
+.modal-head{padding:16px 20px; background:var(--surface-alt); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between;}
+.modal-head h3{font-size:14.5px;}
+.modal-head button{background:none; border:none; font-size:16px; color:var(--navy-faint); line-height:1;}
+.modal-body{padding:18px 20px;}
+.modal-body .m-row{display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--surface-alt); font-size:13px;}
+.modal-body .m-row label{color:var(--navy-soft);}
+.modal-body .m-row .v{font-family:var(--font-mono); font-weight:600; color:var(--navy);}
+.modal-body .m-row:last-child{border-bottom:none;}
+
+/* ============================= DASHBOARD PLACEHOLDER ============================= */
+#dashboardView{
+  min-height:70vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:10px; padding:60px 20px;
+}
+#dashboardView .dash-icon{
+  width:64px; height:64px; border-radius:16px; background:linear-gradient(145deg,#123a6b,#0ea5e9);
+  display:flex; align-items:center; justify-content:center; margin-bottom:6px; box-shadow:var(--shadow-md);
+}
+#dashboardView h2{font-size:24px;}
+#dashboardView .tag{font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--blue); font-weight:700;}
+#dashboardView p{color:var(--navy-soft); max-width:420px; margin-top:6px; font-size:14px;}
+.back-btn{
+  margin-top:22px; padding:11px 20px; border-radius:10px; border:1px solid var(--border); background:var(--surface);
+  font-weight:700; font-size:13px; color:var(--navy); display:flex; align-items:center; gap:8px; box-shadow:var(--shadow-sm);
+}
+.back-btn:hover{border-color:var(--blue); color:var(--blue);}
+
+/* ============================= RESPONSIVE ============================= */
+@media (max-width:860px){
+  .shell{padding:0 16px 40px;}
+  .lower-grid{grid-template-columns:1fr;}
+  .topbar-center{display:none;}
+  .control-card, .summary-card{min-width:100%;}
+}
+</style>
+</head>
+<body>
+
+<!-- ============================= HEADER ============================= -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 2L4 14H11L10 22L20 9H13L13 2Z" fill="white"/></svg>
+      </div>
+      <div class="brand-text">
+        <h1>EnergyOS AI</h1>
+        <span>Industrial Energy Intelligence Platform</span>
+      </div>
+    </div>
+    <div class="topbar-center">
+      <span class="pill">FACTORY SIMULATOR</span>
+      <span class="pill demo">Demo Mode</span>
+    </div>
+    <div class="status-chip" id="topStatus">
+      <span class="dot off" id="topStatusDot"></span>
+      <span id="topStatusText">SYSTEM OFFLINE</span>
+    </div>
+  </div>
+</header>
+
+<div class="shell" id="mainView">
+
+  <!-- ============================= HERO ============================= -->
+  <section class="hero">
+    <span class="eyebrow">Prototype Walkthrough</span>
+    <h2>EnergyOS AI Factory Simulator</h2>
+    <p class="sub">See how electricity data travels from industrial machines to AI-powered insights.</p>
+    <p class="note">This interactive simulation demonstrates the proposed EnergyOS AI architecture using realistic factory energy data.</p>
+  </section>
+
+  <!-- ============================= CONTROL + SUMMARY ============================= -->
+  <div class="panel-row">
+    <div class="card control-card">
+      <div class="control-stats">
+        <div class="stat">
+          <label>Factory Status</label>
+          <div class="val"><span class="dot off" id="ctrlDot"></span><span id="ctrlStatusText">OFFLINE</span></div>
+        </div>
+        <div class="stat"><label>Simulation Speed</label><div class="val">1 sec / update</div></div>
+        <div class="stat"><label>Machines</label><div class="val">6</div></div>
+        <div class="stat"><label>Gateway</label><div class="val">Raspberry Pi 5</div></div>
+        <div class="stat"><label>Data Mode</label><div class="val">Simulated</div></div>
+      </div>
+      <div class="control-buttons">
+        <button class="btn btn-start" id="startBtn">▶ START FACTORY</button>
+        <button class="btn btn-stop" id="stopBtn" disabled>⏹ STOP</button>
+      </div>
+    </div>
+
+    <div class="card summary-card">
+      <h4>Factory Summary</h4>
+      <div class="summary-grid">
+        <div class="stat"><label>Machines Online</label><div class="val" id="sumMachines">0 / 6</div></div>
+        <div class="stat"><label>Gateway</label><div class="val" id="sumGateway">OFFLINE</div></div>
+        <div class="stat"><label>Data Stream</label><div class="val" id="sumStream">IDLE</div></div>
+        <div class="stat"><label>Current Load</label><div class="val big" id="sumLoad">0.0 kW</div></div>
+        <div class="stat"><label>Simulated Energy Today</label><div class="val big" id="sumEnergy">0 kWh</div></div>
+        <div class="stat"><label>PLC/Meter Sync</label><div class="val" id="sumSync">—</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================= STAGE STRIP ============================= -->
+  <div class="stage-strip" id="stageStrip">
+    <span class="stage" data-stage="measure">MEASURE</span><span class="arrow">→</span>
+    <span class="stage" data-stage="collect">COLLECT</span><span class="arrow">→</span>
+    <span class="stage" data-stage="transmit">TRANSMIT</span><span class="arrow">→</span>
+    <span class="stage" data-stage="process">PROCESS</span><span class="arrow">→</span>
+    <span class="stage" data-stage="analyze">ANALYZE</span><span class="arrow">→</span>
+    <span class="stage" data-stage="visualize">VISUALIZE</span>
+  </div>
+
+  <!-- ============================= ARCHITECTURE ============================= -->
+  <div class="arch-header">
+    <div class="titles">
+      <h3>Simulated Industrial Data Flow</h3>
+      <p>Prototype demonstration — sensor values are simulated, not read from real hardware.</p>
+    </div>
+    <div class="arch-scroll-hint">⇆ scroll to explore the full architecture</div>
+  </div>
+
+  <div class="arch-wrapper">
+    <div class="arch-canvas" id="archCanvas">
+      <svg class="connector-layer" id="connectorLayer"></svg>
+
+      <div class="arch-top">
+        <!-- Main Smart Meter chain -->
+        <div class="chain-col" id="colMeter">
+          <div class="node meter-card clickable offline" id="meterCard" data-tip="Modbus RTU smart meter reading factory-level voltage, current and power.">
+            <div class="n-head">
+              <div><div class="n-title">Main Smart Meter</div><div class="n-sub">Factory-Level Energy</div></div>
+              <div class="n-status"><span class="dot off"></span><span id="meterState">OFF</span></div>
+            </div>
+            <div class="n-rows">
+              <div class="n-row"><label>Voltage</label><span class="v" id="mVolt">— V</span></div>
+              <div class="n-row"><label>Current</label><span class="v" id="mCurr">— A</span></div>
+              <div class="n-row"><label>Power</label><span class="v" id="mPow">— kW</span></div>
+              <div class="n-row"><label>Energy</label><span class="v" id="mEnergy">— kWh</span></div>
+              <div class="n-row"><label>P.Factor</label><span class="v" id="mPf">—</span></div>
+              <div class="n-row"><label>Freq</label><span class="v" id="mFreq">— Hz</span></div>
+            </div>
+          </div>
+          <div class="link-label" data-tip="Industrial communication method used to transfer meter data over a wired connection.">RS485&nbsp;A+&nbsp;/&nbsp;B-</div>
+          <div class="chain-connector" id="connMeterConv"></div>
+          <div class="node chip offline" id="convCard" data-tip="Protocol used by the smart meter to communicate electrical measurements.">
+            <div class="n-head">
+              <div><div class="n-title">USB-RS485 Converter</div><div class="n-sub">Modbus Interface</div></div>
+            </div>
+            <div class="link-label" style="margin-top:2px;">A+/B- ↓ USB</div>
+          </div>
+        </div>
+
+        <!-- 6 Machine chains -->
+        <div class="chain-col machine-chain" data-m="0" id="colM0"></div>
+        <div class="chain-col machine-chain" data-m="1" id="colM1"></div>
+        <div class="chain-col machine-chain" data-m="2" id="colM2"></div>
+        <div class="chain-col machine-chain" data-m="3" id="colM3"></div>
+        <div class="chain-col machine-chain" data-m="4" id="colM4"></div>
+        <div class="chain-col machine-chain" data-m="5" id="colM5"></div>
+
+        <!-- Raspberry Pi -->
+        <div class="pi-col">
+          <div class="node pi-card clickable offline" id="piCard" data-tip="Central gateway that collects data from the factory and machine nodes.">
+            <div class="n-head">
+              <div><div class="n-title">Raspberry Pi 5</div><div class="n-sub">Industrial IoT Gateway</div></div>
+              <div class="n-status"><span class="dot off"></span><span id="piState">STANDBY</span></div>
+            </div>
+            <div class="n-rows">
+              <div class="n-row"><label>Msgs Recv</label><span class="v" id="piMsgs">0</span></div>
+              <div class="n-row"><label>Pkts/sec</label><span class="v" id="piPps">0</span></div>
+              <div class="n-row"><label>Nodes</label><span class="v" id="piNodes">0 / 7</span></div>
+            </div>
+            <div class="pi-tag">Data Aggregation</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================= BOTTOM PIPELINE ============================= -->
+      <div class="arch-bottom" id="archBottom">
+        <div class="pipe-node">
+          <div class="node pipe-card offline clickable" id="cloudCard" data-tip="Lightweight messaging protocol used to transfer IoT data, forwarded here over secure HTTPS.">
+            <div class="n-head"><div><div class="n-title">☁ Cloud</div><div class="n-sub">EnergyOS Cloud Platform</div></div><div class="n-status"><span class="dot off"></span><span id="cloudState">OFFLINE</span></div></div>
+            <div class="n-rows">
+              <div class="n-row"><label>Telemetry</label><span class="v" id="cloudTel">—</span></div>
+              <div class="n-row"><label>Connection</label><span class="v" id="cloudConn">—</span></div>
+              <div class="n-row"><label>Data Stream</label><span class="v" id="cloudStream">—</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="pipe-arrow" id="arrow1"><svg viewBox="0 0 24 14" fill="none"><path d="M0 7H22M22 7L16 1M22 7L16 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+        <div class="pipe-node">
+          <div class="node pipe-card offline" id="backendCard">
+            <div class="n-head"><div><div class="n-title">Backend</div><div class="n-sub">EnergyOS API</div></div></div>
+            <div class="n-rows">
+              <div class="n-row"><label>Validation</label><span class="v" id="beVal">—</span></div>
+              <div class="n-row"><label>Processing</label><span class="v" id="beProc">—</span></div>
+              <div class="n-row"><label>Analytics</label><span class="v" id="beAnalytics">—</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="pipe-arrow" id="arrow2"><svg viewBox="0 0 24 14" fill="none"><path d="M0 7H22M22 7L16 1M22 7L16 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+        <div class="pipe-node">
+          <div class="node pipe-card offline" id="dbCard">
+            <div class="n-head"><div><div class="n-title">Database</div><div class="n-sub">Energy Data Store</div></div></div>
+            <div class="n-rows">
+              <div class="n-row"><label>Records</label><span class="v" id="dbRecords">24,821</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="pipe-arrow" id="arrow3"><svg viewBox="0 0 24 14" fill="none"><path d="M0 7H22M22 7L16 1M22 7L16 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+        <div class="pipe-node">
+          <div class="node pipe-card offline" id="aiCard" data-tip="Analyzes energy patterns and generates useful insights.">
+            <div class="n-head"><div><div class="n-title">AI Analysis</div><div class="n-sub">EnergyOS Intelligence</div></div><div class="n-status"><span class="dot off"></span><span id="aiState">IDLE</span></div></div>
+            <div class="ai-cycle" id="aiCycle">Awaiting factory start…</div>
+          </div>
+        </div>
+        <div class="pipe-arrow" id="arrow4"><svg viewBox="0 0 24 14" fill="none"><path d="M0 7H22M22 7L16 1M22 7L16 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+        <div class="pipe-node">
+          <div class="node pipe-card offline" id="dashCard">
+            <div class="n-head"><div><div class="n-title">🖥 Dashboard</div><div class="n-sub">EnergyOS Control Center</div></div></div>
+            <button class="dash-btn" id="openDashBtn">Open Dashboard →</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="honesty-note">All values shown are simulated for demonstration. The production system will receive live readings from real industrial meters and IoT nodes.</div>
+    </div>
+  </div>
+
+  <!-- ============================= LOWER GRID ============================= -->
+  <div class="lower-grid">
+    <div class="card log-card">
+      <h4>🖧 Live System Events</h4>
+      <div class="log-list" id="logList"></div>
+    </div>
+    <div class="card legend-card">
+      <h4>How To Read This Diagram</h4>
+      <div class="legend-grid">
+        <div class="legend-item"><span class="swatch" style="background:var(--cyan)"></span><span class="lbl"><b>Cyan packets</b> — machine telemetry over Wi-Fi/MQTT</span></div>
+        <div class="legend-item"><span class="swatch" style="background:var(--green)"></span><span class="lbl"><b>Green packets</b> — main meter data over RS485</span></div>
+        <div class="legend-item"><span class="swatch" style="background:var(--amber)"></span><span class="lbl"><b>Amber card</b> — a machine briefly under high load</span></div>
+        <div class="legend-item"><span class="swatch" style="background:var(--navy)"></span><span class="lbl">Hover any node for a plain-language explanation</span></div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="foot">EnergyOS AI — MSME Hackathon Prototype · Frontend-only simulation, no hardware or live cloud connection.</footer>
+</div>
+
+<!-- ============================= DASHBOARD PLACEHOLDER VIEW ============================= -->
+<div id="dashboardView" class="shell hidden">
+  <div class="dash-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M13 2L4 14H11L10 22L20 9H13L13 2Z" fill="white"/></svg></div>
+  <span class="tag">EnergyOS Dashboard</span>
+  <h2>Coming Next</h2>
+  <p>Dashboard interface will be developed separately. This simulator's job is to prove the data pipeline underneath it — the visualization layer is next.</p>
+  <button class="back-btn" id="backBtn">← Back to Factory Simulator</button>
+</div>
+
+<!-- ============================= MODAL ============================= -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <div class="modal-head"><h3 id="modalTitle">Node</h3><button id="modalClose">✕</button></div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ============================= STATIC CONFIG ============================= */
+const MACHINE_CONFIG = [
+  {id:"M01", name:"Machine 01", pMin:7,   pMax:9,   cMin:16, cMax:20, vMin:410, vMax:418, tMin:42, tMax:50},
+  {id:"M02", name:"Machine 02", pMin:4,   pMax:6,   cMin:10, cMax:14, vMin:410, vMax:418, tMin:38, tMax:45},
+  {id:"M03", name:"Machine 03", pMin:10,  pMax:14,  cMin:24, cMax:30, vMin:410, vMax:418, tMin:48, tMax:58},
+  {id:"M04", name:"Machine 04", pMin:5,   pMax:8,   cMin:12, cMax:18, vMin:410, vMax:418, tMin:40, tMax:47},
+  {id:"M05", name:"Machine 05", pMin:12,  pMax:16,  cMin:28, cMax:34, vMin:410, vMax:418, tMin:50, tMax:60},
+  {id:"M06", name:"Machine 06", pMin:6,   pMax:10,  cMin:14, cMax:22, vMin:410, vMax:418, tMin:40, tMax:49},
+];
+
+const TOOLTIPS = {
+  ct: "Non-invasive current measurement around the machine power conductor.",
+  meterModule: "Converts electrical measurements into digital values such as voltage, current, power, energy and power factor.",
+  esp32: "Small IoT controller used for machine-level monitoring and wireless communication.",
+};
+
+const AI_MESSAGES = [
+  "✓ Consumption anomaly detection",
+  "✓ Machine comparison",
+  "✓ Peak demand analysis",
+  "✓ Bill prediction",
+  "✓ Energy-saving recommendations",
+];
+
+/* ============================= STATE ============================= */
+let running = false;
+let tickTimer = null;
+let aiCycleIdx = 0;
+let aiCycleTimer = null;
+let warnTimer = null;
+let currentWarnMachine = -1;
+
+const state = {
+  meter: {voltage:415, current:112, power:72.4, energy:2418, pf:0.96, freq:50},
+  machines: MACHINE_CONFIG.map(cfg => ({
+    ...cfg,
+    voltage: (cfg.vMin+cfg.vMax)/2,
+    current: (cfg.cMin+cfg.cMax)/2,
+    power: (cfg.pMin+cfg.pMax)/2,
+    energy: 300 + Math.random()*200,
+    pf: 0.96,
+    temp: (cfg.tMin+cfg.tMax)/2,
+    status: "OFFLINE",
+    idleUntil: 0,
+  })),
+  pi: {messages:1284, pps:0, nodes:0},
+  db: {records:24821},
+};
+
+/* ============================= DOM BUILD: MACHINE CHAINS ============================= */
+function buildMachineChain(idx){
+  const cfg = MACHINE_CONFIG[idx];
+  const col = document.getElementById("colM"+idx);
+  col.innerHTML = `
+    <div class="node chip clickable offline" id="machine${idx}Card" data-tip="Machine electrical feed monitored end-to-end by EnergyOS.">
+      <div class="n-head">
+        <div><div class="n-title">${cfg.name}</div></div>
+        <div class="n-status"><span class="dot off"></span><span id="machine${idx}State">OFF</span></div>
+      </div>
+      <div class="n-rows">
+        <div class="n-row"><label>Power</label><span class="v" id="machine${idx}Pow">— kW</span></div>
+        <div class="n-row"><label>Current</label><span class="v" id="machine${idx}Curr">— A</span></div>
+      </div>
+    </div>
+    <div class="chain-connector" id="conn${idx}a"></div>
+    <div class="node chip" id="ct${idx}Card" data-tip="${TOOLTIPS.ct}">
+      <div class="n-head"><div><div class="n-title">CT Clamp</div><div class="n-sub">Current Sensing</div></div></div>
+    </div>
+    <div class="chain-connector" id="conn${idx}b"></div>
+    <div class="node chip" id="meterMod${idx}Card" data-tip="${TOOLTIPS.meterModule}">
+      <div class="n-head"><div><div class="n-title">Energy Meter</div><div class="n-sub">ADE7753 / ATM90E32</div></div></div>
+    </div>
+    <div class="chain-connector" id="conn${idx}c"></div>
+    <div class="node chip clickable offline" id="esp${idx}Card" data-tip="${TOOLTIPS.esp32}">
+      <div class="n-head">
+        <div><div class="n-title">ESP32</div><div class="n-sub">Machine Node</div></div>
+        <div class="n-status"><span class="dot off"></span><span id="esp${idx}State">OFF</span></div>
+      </div>
+      <div class="wifi-wrap" id="wifi${idx}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 8.5C7 3.5 17 3.5 22 8.5"/><path d="M5.5 12C9 8.7 15 8.7 18.5 12"/><path d="M9 15.5C10.7 13.9 13.3 13.9 15 15.5"/><circle cx="12" cy="19" r="1.4" fill="currentColor" stroke="none"/></svg>
+        <span>Wi-Fi · MQTT</span>
+      </div>
+    </div>
+  `;
+}
+for(let i=0;i<6;i++) buildMachineChain(i);
+
+/* ============================= TOOLTIP ADDITIONS for main pipe labels ============================= */
+document.getElementById("cloudCard").setAttribute("data-tip", TOOLTIPS && "Lightweight messaging protocol used to transfer IoT data.");
+
+/* ============================= LOGGING ============================= */
+const logList = document.getElementById("logList");
+const LOG_TEMPLATES = [
+  "✓ Smart Meter reading received",
+  "✓ ESP32-{M} data received",
+  "✓ Machine {N} energy updated",
+  "✓ MQTT packet received",
+  "✓ Energy data processed",
+  "✓ AI analysis running",
+  "✓ Gateway heartbeat OK",
+  "✓ RS485 frame decoded",
+];
+function timeNow(){
+  const d = new Date();
+  return d.toTimeString().slice(0,8);
+}
+function pushLog(msg){
+  const row = document.createElement("div");
+  row.className = "entry";
+  row.innerHTML = `<span class="time">${timeNow()}</span><span class="msg ok">${msg}</span>`;
+  logList.appendChild(row);
+  while(logList.children.length > 8) logList.removeChild(logList.firstChild);
+}
+
+/* ============================= CONNECTOR LINES (SVG) ============================= */
+const svgLayer = document.getElementById("connectorLayer");
+const canvas = document.getElementById("archCanvas");
+
+function pathBetween(elA, elB, opts){
+  const cRect = canvas.getBoundingClientRect();
+  const a = elA.getBoundingClientRect();
+  const b = elB.getBoundingClientRect();
+  const x1 = a.right - cRect.left, y1 = a.top + a.height/2 - cRect.top;
+  const x2 = b.left - cRect.left, y2 = b.top + b.height/2 - cRect.top;
+  const midX = (x1+x2)/2;
+  return `M${x1},${y1} C${midX},${y1} ${midX},${y2} ${x2},${y2}`;
+}
+
+let staticLines = []; // {fromId,toId, el}
+function drawStaticLines(){
+  svgLayer.innerHTML = "";
+  staticLines = [];
+  const defs = document.createElementNS("http://www.w3.org/2000/svg","defs");
+  svgLayer.appendChild(defs);
+
+  const pairs = [];
+  for(let i=0;i<6;i++){
+    pairs.push([document.getElementById("esp"+i+"Card"), document.getElementById("piCard"), "cyan"]);
+  }
+  pairs.push([document.getElementById("convCard"), document.getElementById("piCard"), "green"]);
+
+  pairs.forEach(([fromEl,toEl,color])=>{
+    const path = document.createElementNS("http://www.w3.org/2000/svg","path");
+    path.setAttribute("fill","none");
+    path.setAttribute("stroke", color==="cyan" ? "#bcdcf5" : "#bfe6d2");
+    path.setAttribute("stroke-width","1.6");
+    path.setAttribute("d", pathBetween(fromEl,toEl));
+    svgLayer.appendChild(path);
+    staticLines.push({fromEl,toEl,path,color});
+  });
+}
+function refreshLines(){
+  staticLines.forEach(l=>{
+    l.path.setAttribute("d", pathBetween(l.fromEl,l.toEl));
+    l.path.setAttribute("stroke", running ? (l.color==="cyan" ? "#7fd4f5" : "#7fd9ab") : (l.color==="cyan" ? "#e2edf5" : "#e2edf5"));
+  });
+}
+window.addEventListener("resize", ()=>{ drawStaticLines(); refreshLines(); });
+
+/* ============================= PACKET FLIGHT ============================= */
+function firePacket(fromEl, toEl, label, cls){
+  const cRect = canvas.getBoundingClientRect();
+  const a = fromEl.getBoundingClientRect();
+  const b = toEl.getBoundingClientRect();
+  const x1 = a.right - cRect.left - 4, y1 = a.top + a.height/2 - cRect.top - 8;
+  const x2 = b.left - cRect.left - 4, y2 = b.top + b.height/2 - cRect.top - 8;
+
+  const p = document.createElement("div");
+  p.className = "packet" + (cls ? " "+cls : "");
+  p.textContent = label;
+  p.style.transform = `translate(${x1}px,${y1}px)`;
+  canvas.appendChild(p);
+
+  const anim = p.animate([
+    {transform:`translate(${x1}px,${y1}px)`, opacity:0},
+    {transform:`translate(${x1+(x2-x1)*0.15}px,${y1+(y2-y1)*0.15}px)`, opacity:1, offset:0.12},
+    {transform:`translate(${x2}px,${y2}px)`, opacity:1, offset:0.88},
+    {transform:`translate(${x2}px,${y2}px)`, opacity:0},
+  ], {duration: 1400 + Math.random()*400, easing:"ease-in-out"});
+  anim.onfinish = ()=> p.remove();
+}
+
+let activePackets = 0;
+const MAX_PACKETS = 3;
+function maybeFireMachinePacket(idx){
+  if(!running || activePackets >= MAX_PACKETS) return;
+  const m = state.machines[idx];
+  const esp = document.getElementById("esp"+idx+"Card");
+  const pi = document.getElementById("piCard");
+  activePackets++;
+  firePacket(esp, pi, `${m.id} | ${m.power.toFixed(1)}kW`, "");
+  setTimeout(()=>{activePackets = Math.max(0,activePackets-1);}, 1600);
+}
+function maybeFireMainPacket(){
+  if(!running || activePackets >= MAX_PACKETS) return;
+  const conv = document.getElementById("convCard");
+  const pi = document.getElementById("piCard");
+  activePackets++;
+  firePacket(conv, pi, `MAIN | ${state.meter.power.toFixed(1)}kW`, "main");
+  setTimeout(()=>{activePackets = Math.max(0,activePackets-1);}, 1600);
+}
+
+/* ============================= SMOOTH VALUE HELPER ============================= */
+function smooth(curr, min, max, jitter){
+  let next = curr + (Math.random()-0.5)*jitter;
+  if(next < min) next = min + Math.random()*jitter*0.5;
+  if(next > max) next = max - Math.random()*jitter*0.5;
+  return next;
+}
+
+/* ============================= UI SETTERS ============================= */
+function setNodeState(cardEl, dotEl, on){
+  cardEl.classList.toggle("active", on);
+  cardEl.classList.toggle("offline", !on);
+  dotEl.classList.toggle("on", on);
+  dotEl.classList.toggle("off", !on);
+}
+
+/* ============================= TICK ============================= */
+function tick(){
+  /* --- main meter --- */
+  const m = state.meter;
+  m.voltage = smooth(m.voltage, 412, 418, 1.4);
+  m.current = smooth(m.current, 105, 120, 2.2);
+  m.power = smooth(m.power, 65, 80, 1.6);
+  m.pf = smooth(m.pf, 0.92, 0.99, 0.01);
+  m.freq = smooth(m.freq, 49.8, 50.2, 0.05);
+  m.energy += m.power/3600*1000/1000; // small continuous increase
+
+  document.getElementById("mVolt").textContent = m.voltage.toFixed(1)+" V";
+  document.getElementById("mCurr").textContent = m.current.toFixed(1)+" A";
+  document.getElementById("mPow").textContent = m.power.toFixed(1)+" kW";
+  document.getElementById("mEnergy").textContent = m.energy.toFixed(1)+" kWh";
+  document.getElementById("mPf").textContent = m.pf.toFixed(2);
+  document.getElementById("mFreq").textContent = m.freq.toFixed(1)+" Hz";
+
+  /* --- machines --- */
+  let totalLoad = m.power;
+  let onlineCount = 0;
+  state.machines.forEach((mc, idx)=>{
+    const now = Date.now();
+    if(idx === 5 && mc.idleUntil === 0 && Math.random() < 0.04){
+      mc.idleUntil = now + (3000 + Math.random()*3000);
+    }
+    const isIdle = mc.idleUntil > now;
+    if(mc.idleUntil !== 0 && now > mc.idleUntil) mc.idleUntil = 0;
+
+    if(isIdle){
+      mc.power = smooth(mc.power, 0.3, 0.8, 0.1);
+      mc.status = "IDLE";
+    } else {
+      mc.power = smooth(mc.power, mc.pMin, mc.pMax, 0.5);
+      mc.status = "RUNNING";
+    }
+    mc.current = smooth(mc.current, mc.cMin, mc.cMax, 0.6);
+    mc.voltage = smooth(mc.voltage, mc.vMin, mc.vMax, 1.2);
+    mc.pf = smooth(mc.pf, 0.94, 0.99, 0.01);
+    mc.temp = smooth(mc.temp, mc.tMin, mc.tMax, 0.6);
+    mc.energy += mc.power/3600*1000/1000;
+    totalLoad += mc.power;
+    if(!isIdle) onlineCount++;
+
+    const card = document.getElementById(`machine${idx}Card`);
+    const isWarn = idx === currentWarnMachine;
+    card.classList.toggle("warn", isWarn);
+    document.getElementById(`machine${idx}Pow`).textContent = mc.power.toFixed(1)+" kW";
+    document.getElementById(`machine${idx}Curr`).textContent = mc.current.toFixed(1)+" A";
+    document.getElementById(`machine${idx}State`).textContent = isWarn ? "HIGH LOAD" : (isIdle ? "IDLE" : "RUNNING");
+    const dot = card.querySelector(".dot");
+    dot.className = "dot " + (isWarn ? "warn" : "on");
+    document.getElementById(`esp${idx}Pow`) && 0;
+  });
+
+  /* --- occasional warning demo --- */
+  if(running && currentWarnMachine === -1 && Math.random() < 0.01){
+    currentWarnMachine = Math.floor(Math.random()*6);
+    const mc = state.machines[currentWarnMachine];
+    mc.power = mc.pMax + 2 + Math.random()*2;
+    pushLog(`⚠ ${mc.name} entering HIGH LOAD state`);
+    setTimeout(()=>{ currentWarnMachine = -1; }, 6000 + Math.random()*2000);
+  }
+
+  /* --- pi / summary --- */
+  state.pi.messages += Math.floor(2 + Math.random()*4);
+  state.pi.pps = Math.floor(9 + Math.random()*6);
+  document.getElementById("piMsgs").textContent = state.pi.messages.toLocaleString();
+  document.getElementById("piPps").textContent = state.pi.pps;
+  document.getElementById("piNodes").textContent = "7 / 7";
+
+  document.getElementById("sumMachines").textContent = `${onlineCount} / 6`;
+  document.getElementById("sumLoad").textContent = totalLoad.toFixed(1)+" kW";
+  document.getElementById("sumEnergy").textContent = Math.round(m.energy + state.machines.reduce((s,x)=>s+x.energy,0)).toLocaleString()+" kWh";
+
+  state.db.records += Math.floor(3 + Math.random()*5);
+  document.getElementById("dbRecords").textContent = state.db.records.toLocaleString();
+
+  /* --- packets --- */
+  maybeFireMainPacket();
+  const luckyMachine = Math.floor(Math.random()*6);
+  maybeFireMachinePacket(luckyMachine);
+
+  /* --- logs --- */
+  const tpl = LOG_TEMPLATES[Math.floor(Math.random()*LOG_TEMPLATES.length)]
+    .replace("{M}", state.machines[luckyMachine].id)
+    .replace("{N}", (luckyMachine+1).toString().padStart(2,"0"));
+  pushLog(tpl);
+}
+
+/* ============================= START / STOP ============================= */
+const startBtn = document.getElementById("startBtn");
+const stopBtn = document.getElementById("stopBtn");
+
+function setTopStatus(text, mode){
+  document.getElementById("topStatusText").textContent = text;
+  const dot = document.getElementById("topStatusDot");
+  dot.className = "dot " + mode;
+}
+
+function startFactory(){
+  if(running) return;
+  running = true;
+  startBtn.disabled = true;
+  stopBtn.disabled = false;
+
+  setTopStatus("FACTORY RUNNING", "on");
+  document.getElementById("ctrlDot").className = "dot on";
+  document.getElementById("ctrlStatusText").textContent = "RUNNING";
+
+  setNodeState(document.getElementById("meterCard"), document.getElementById("meterCard").querySelector(".dot"), true);
+  document.getElementById("meterState").textContent = "LIVE";
+  document.getElementById("convCard").classList.remove("offline");
+  document.getElementById("convCard").classList.add("active");
+
+  for(let i=0;i<6;i++){
+    const mCard = document.getElementById(`machine${i}Card`);
+    setNodeState(mCard, mCard.querySelector(".dot"), true);
+    document.getElementById(`machine${i}State`).textContent = "RUNNING";
+    document.getElementById(`ct${i}Card`).classList.add("active");
+    document.getElementById(`meterMod${i}Card`).classList.add("active");
+    const espCard = document.getElementById(`esp${i}Card`);
+    setNodeState(espCard, espCard.querySelector(".dot"), true);
+    document.getElementById(`esp${i}State`).textContent = "ONLINE";
+    document.getElementById(`wifi${i}`).classList.add("active");
+    document.getElementById(`conn${i}a`).classList.add("flow");
+    document.getElementById(`conn${i}b`).classList.add("flow");
+    document.getElementById(`conn${i}c`).classList.add("flow");
+  }
+  document.getElementById("connMeterConv").classList.add("flow");
+
+  const piCard = document.getElementById("piCard");
+  piCard.classList.remove("offline");
+  document.getElementById("piState").textContent = "ONLINE";
+
+  document.getElementById("cloudCard").classList.remove("offline");
+  document.getElementById("cloudCard").classList.add("active");
+  document.getElementById("cloudState").textContent = "CONNECTED";
+  document.getElementById("cloudTel").textContent = "✓ Receiving";
+  document.getElementById("cloudConn").textContent = "✓ Secure";
+  document.getElementById("cloudStream").textContent = "LIVE";
+
+  document.getElementById("backendCard").classList.remove("offline");
+  document.getElementById("beVal").textContent = "✓";
+  document.getElementById("beProc").textContent = "✓";
+  document.getElementById("beAnalytics").textContent = "✓";
+
+  document.getElementById("dbCard").classList.remove("offline");
+  document.getElementById("aiCard").classList.remove("offline");
+  document.getElementById("aiCard").classList.add("active");
+  document.getElementById("aiState").textContent = "ANALYZING";
+  document.getElementById("dashCard").classList.remove("offline");
+  document.getElementById("dashCard").classList.add("active");
+
+  ["arrow1","arrow2","arrow3","arrow4"].forEach(id=>document.getElementById(id).classList.add("flow"));
+
+  document.getElementById("sumGateway").textContent = "ONLINE";
+  document.getElementById("sumStream").textContent = "LIVE";
+  document.getElementById("sumSync").textContent = "✓ Synced";
+
+  // stage strip cycling
+  const stages = ["measure","collect","transmit","process","analyze","visualize"];
+  let sIdx = 0;
+  document.querySelectorAll(".stage-strip .stage").forEach(s=>s.classList.remove("active"));
+  window._stageTimer = setInterval(()=>{
+    document.querySelectorAll(".stage-strip .stage").forEach(s=>s.classList.remove("active"));
+    document.querySelector(`.stage[data-stage="${stages[sIdx]}"]`).classList.add("active");
+    sIdx = (sIdx+1)%stages.length;
+  }, 900);
+
+  aiCycleIdx = 0;
+  document.getElementById("aiCycle").textContent = "Analyzing energy patterns…";
+  aiCycleTimer = setInterval(()=>{
+    document.getElementById("aiCycle").textContent = AI_MESSAGES[aiCycleIdx % AI_MESSAGES.length];
+    aiCycleIdx++;
+  }, 1800);
+
+  pushLog("✓ Factory simulation started");
+  refreshLines();
+  tickTimer = setInterval(tick, 1000);
+  tick();
+}
+
+function stopFactory(){
+  if(!running) return;
+  running = false;
+  startBtn.disabled = false;
+  stopBtn.disabled = true;
+  clearInterval(tickTimer);
+  clearInterval(aiCycleTimer);
+  clearInterval(window._stageTimer);
+  document.querySelectorAll(".stage-strip .stage").forEach(s=>s.classList.remove("active"));
+  currentWarnMachine = -1;
+
+  setTopStatus("FACTORY STOPPED", "off");
+  document.getElementById("ctrlDot").className = "dot off";
+  document.getElementById("ctrlStatusText").textContent = "STOPPED";
+
+  document.getElementById("meterCard").classList.remove("active");
+  document.getElementById("meterCard").classList.add("offline");
+  document.getElementById("meterCard").querySelector(".dot").className = "dot off";
+  document.getElementById("meterState").textContent = "OFF";
+  document.getElementById("convCard").classList.remove("active");
+
+  for(let i=0;i<6;i++){
+    const mCard = document.getElementById(`machine${i}Card`);
+    mCard.classList.remove("active","warn");
+    mCard.classList.add("offline");
+    mCard.querySelector(".dot").className = "dot off";
+    document.getElementById(`machine${i}State`).textContent = "OFFLINE";
+    document.getElementById(`ct${i}Card`).classList.remove("active");
+    document.getElementById(`meterMod${i}Card`).classList.remove("active");
+    const espCard = document.getElementById(`esp${i}Card`);
+    espCard.classList.remove("active"); espCard.classList.add("offline");
+    espCard.querySelector(".dot").className = "dot off";
+    document.getElementById(`esp${i}State`).textContent = "OFF";
+    document.getElementById(`wifi${i}`).classList.remove("active");
+    document.getElementById(`conn${i}a`).classList.remove("flow");
+    document.getElementById(`conn${i}b`).classList.remove("flow");
+    document.getElementById(`conn${i}c`).classList.remove("flow");
+  }
+  document.getElementById("connMeterConv").classList.remove("flow");
+
+  document.getElementById("piCard").classList.add("offline");
+  document.getElementById("piState").textContent = "STANDBY";
+
+  document.getElementById("cloudCard").classList.add("offline");
+  document.getElementById("cloudCard").classList.remove("active");
+  document.getElementById("cloudState").textContent = "OFFLINE";
+  document.getElementById("cloudTel").textContent = "—";
+  document.getElementById("cloudConn").textContent = "—";
+  document.getElementById("cloudStream").textContent = "—";
+
+  document.getElementById("backendCard").classList.add("offline");
+  document.getElementById("beVal").textContent = "—";
+  document.getElementById("beProc").textContent = "—";
+  document.getElementById("beAnalytics").textContent = "—";
+
+  document.getElementById("aiCard").classList.add("offline");
+  document.getElementById("aiCard").classList.remove("active");
+  document.getElementById("aiState").textContent = "IDLE";
+  document.getElementById("aiCycle").textContent = "Awaiting factory start…";
+
+  document.getElementById("dashCard").classList.remove("active");
+
+  ["arrow1","arrow2","arrow3","arrow4"].forEach(id=>document.getElementById(id).classList.remove("flow"));
+
+  document.getElementById("sumGateway").textContent = "OFFLINE";
+  document.getElementById("sumStream").textContent = "IDLE";
+  document.getElementById("sumSync").textContent = "—";
+
+  pushLog("⏹ Factory simulation stopped");
+  refreshLines();
+}
+
+startBtn.addEventListener("click", startFactory);
+stopBtn.addEventListener("click", stopFactory);
+
+/* ============================= MODALS ============================= */
+const modalOverlay = document.getElementById("modalOverlay");
+const modalTitle = document.getElementById("modalTitle");
+const modalBody = document.getElementById("modalBody");
+
+function openModal(title, rows){
+  modalTitle.textContent = title;
+  modalBody.innerHTML = rows.map(r=>`<div class="m-row"><label>${r[0]}</label><span class="v">${r[1]}</span></div>`).join("");
+  modalOverlay.classList.add("show");
+}
+document.getElementById("modalClose").addEventListener("click", ()=>modalOverlay.classList.remove("show"));
+modalOverlay.addEventListener("click", (e)=>{ if(e.target === modalOverlay) modalOverlay.classList.remove("show"); });
+
+document.getElementById("meterCard").addEventListener("click", ()=>{
+  const m = state.meter;
+  openModal("Main Factory Smart Meter", [
+    ["Voltage", m.voltage.toFixed(1)+" V"],
+    ["Current", m.current.toFixed(1)+" A"],
+    ["Power", m.power.toFixed(1)+" kW"],
+    ["Energy", m.energy.toFixed(1)+" kWh"],
+    ["Power Factor", m.pf.toFixed(2)],
+    ["Frequency", m.freq.toFixed(1)+" Hz"],
+    ["Communication", "RS485 Modbus RTU"],
+  ]);
+});
+document.getElementById("piCard").addEventListener("click", ()=>{
+  openModal("Raspberry Pi 5 — Gateway Status", [
+    ["Gateway Status", running ? "ONLINE" : "STANDBY"],
+    ["Connected Devices", running ? "7" : "0"],
+    ["Packets Received", state.pi.messages.toLocaleString()],
+    ["Protocol", "MQTT / Wi-Fi"],
+  ]);
+});
+for(let i=0;i<6;i++){
+  document.getElementById(`esp${i}Card`).addEventListener("click", ()=>{
+    const mc = state.machines[i];
+    openModal(`ESP32 — ${mc.id}`, [
+      ["Machine ID", mc.id],
+      ["Status", running ? mc.status : "OFFLINE"],
+      ["Current", mc.current.toFixed(1)+" A"],
+      ["Power", mc.power.toFixed(1)+" kW"],
+      ["Communication", "Wi-Fi / MQTT"],
+    ]);
+  });
+  document.getElementById(`machine${i}Card`).addEventListener("click", ()=>{
+    const mc = state.machines[i];
+    openModal(mc.name, [
+      ["Status", running ? mc.status : "OFFLINE"],
+      ["Voltage", mc.voltage.toFixed(1)+" V"],
+      ["Current", mc.current.toFixed(1)+" A"],
+      ["Power", mc.power.toFixed(1)+" kW"],
+      ["Energy", mc.energy.toFixed(1)+" kWh"],
+      ["Power Factor", mc.pf.toFixed(2)],
+      ["Temperature", mc.temp.toFixed(0)+"°C"],
+    ]);
+  });
+}
+document.getElementById("cloudCard").addEventListener("click", ()=>{
+  openModal("Cloud — EnergyOS Platform", [
+    ["Telemetry", running ? "✓ Receiving" : "—"],
+    ["Connection", running ? "✓ Secure" : "—"],
+    ["Data Stream", running ? "LIVE" : "IDLE"],
+    ["Protocol", "MQTT / HTTPS"],
+  ]);
+});
+
+/* ============================= DASHBOARD NAV ============================= */
+const mainView = document.getElementById("mainView");
+const dashboardView = document.getElementById("dashboardView");
+function showDashboard(){
+  mainView.classList.add("hidden");
+  dashboardView.classList.remove("hidden");
+  window.location.hash = "dashboard";
+}
+function showMain(){
+  dashboardView.classList.add("hidden");
+  mainView.classList.remove("hidden");
+  history.replaceState(null, "", window.location.pathname + window.location.search);
+  drawStaticLines(); refreshLines();
+}
+document.getElementById("openDashBtn").addEventListener("click", () => {
+    window.location.href = "dashboard.html";
+});
+
+/* ============================= INIT ============================= */
+drawStaticLines();
+refreshLines();
+pushLog("System initialized — awaiting operator start");
+setTopStatus("SYSTEM OFFLINE","off");
+
+})();
+</script>
+</body>
+</html>
